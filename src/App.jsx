@@ -3,7 +3,7 @@ import Card from "./components/Card";
 import Button from "./components/Button";
 
 export default function App() {
-  // All Patient States
+  // State
   const [patientProfile, setPatientProfile] = useState({
     name: "",
     age: "",
@@ -62,7 +62,6 @@ export default function App() {
   const [suggestions, setSuggestions] = useState([]);
   const [medications, setMedications] = useState([]);
   const [warnings, setWarnings] = useState([]);
-
   const [patientSummary, setPatientSummary] = useState("");
 
   // Offline Diagnostic Logic
@@ -181,13 +180,11 @@ Ultrasound Findings: ${imaging.ultrasoundFindings}
     setPatientSummary(summary);
   }
 
-  // Copy to Clipboard
   function copySummary() {
     navigator.clipboard.writeText(patientSummary);
     alert("Patient data copied to clipboard!");
   }
 
-  // Open ChatGPT with Prompt
   function openChatGPTWithSummary() {
     if (!patientSummary) {
       alert("Please generate the patient summary first!");
@@ -198,12 +195,11 @@ Ultrasound Findings: ${imaging.ultrasoundFindings}
     window.open(chatURL, "_blank");
   }
 
-  // ✅ UI
   return (
     <div className="max-w-3xl mx-auto p-6 font-sans">
       <h1 className="text-2xl font-bold mb-4">NephroGuide - Diagnosis Interface</h1>
 
-      {/* Patient Profile */}
+      {/* ALL INPUT CARDS */}
       <Card>
         <h2 className="font-semibold">👤 Patient Profile</h2>
         <input type="text" placeholder="Name" value={patientProfile.name} onChange={(e) => setPatientProfile({ ...patientProfile, name: e.target.value })} className="border p-2 block mb-2" />
@@ -221,13 +217,11 @@ Ultrasound Findings: ${imaging.ultrasoundFindings}
         </select>
       </Card>
 
-      {/* Medical History */}
       <Card>
         <h2 className="font-semibold">🩺 Medical History</h2>
         {["diabetes", "hypertension", "nsaidUse", "pastStoneDisease", "familyCKD", "tb", "hiv", "hepatitis"].map((item) => (
           <label key={item} className="block mb-1">
-            <input type="checkbox" name={item} checked={medicalHistory[item]} onChange={(e) => setMedicalHistory({ ...medicalHistory, [item]: e.target.checked })} />{" "}
-            {item.replace(/([A-Z])/g, " $1").toUpperCase()}
+            <input type="checkbox" checked={medicalHistory[item]} onChange={(e) => setMedicalHistory({ ...medicalHistory, [item]: e.target.checked })} /> {item.replace(/([A-Z])/g, " $1").toUpperCase()}
           </label>
         ))}
         {medicalHistory.diabetes && (
@@ -238,18 +232,15 @@ Ultrasound Findings: ${imaging.ultrasoundFindings}
         )}
       </Card>
 
-      {/* Symptoms */}
       <Card>
         <h2 className="font-semibold">🩹 Symptoms</h2>
         {Object.keys(symptoms).map((item) => (
           <label key={item} className="block mb-1">
-            <input type="checkbox" name={item} checked={symptoms[item]} onChange={(e) => setSymptoms({ ...symptoms, [item]: e.target.checked })} />{" "}
-            {item.replace(/([A-Z])/g, " $1").toUpperCase()}
+            <input type="checkbox" checked={symptoms[item]} onChange={(e) => setSymptoms({ ...symptoms, [item]: e.target.checked })} /> {item.replace(/([A-Z])/g, " $1").toUpperCase()}
           </label>
         ))}
       </Card>
 
-      {/* Physical Exam */}
       <Card>
         <h2 className="font-semibold">🩺 Physical Exam</h2>
         <input type="number" placeholder="SBP (mmHg)" value={physicalExam.sbp} onChange={(e) => setPhysicalExam({ ...physicalExam, sbp: e.target.value })} className="border p-2 block mb-2" />
@@ -262,8 +253,6 @@ Ultrasound Findings: ${imaging.ultrasoundFindings}
           <option value="Hypervolemic">Hypervolemic</option>
         </select>
       </Card>
-
-      {/* Lab Results */}
 <Card>
   <h2 className="font-semibold">🧪 Lab Results</h2>
 
@@ -418,3 +407,8 @@ Ultrasound Findings: ${imaging.ultrasoundFindings}
   );
 }
 
+      {/* NEXT MESSAGE WILL HAVE THE LABS, IMAGING, AND BOTTOM BUTTONS! */}
+
+    </div>
+  );
+}
