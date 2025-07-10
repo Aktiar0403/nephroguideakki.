@@ -106,7 +106,7 @@ Reply in JSON with keys:
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          "Authorization": `Bearer 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`
+          "Authorization": `Bearer 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`
         },
         body: JSON.stringify({
           model: "gpt-4o",
