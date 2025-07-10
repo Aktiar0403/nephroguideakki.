@@ -352,8 +352,3 @@ Ultrasound Findings: ${imaging.ultrasoundFindings}
   );
 }
 
-      {/* NEXT MESSAGE WILL HAVE THE LABS, IMAGING, AND BOTTOM BUTTONS! */}
-
-    </div>
-  );
-}
