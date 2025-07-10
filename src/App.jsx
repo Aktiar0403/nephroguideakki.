@@ -4,15 +4,15 @@ import Button from "./components/Button";
 
 export default function App() {
 
-  // ✅ Patient Demographics (India)
+  // ✅ STATE: Patient Demographics (India)
   const [patientProfile, setPatientProfile] = useState({
     name: "",
     age: "",
     gender: "",
-    location: ""  // rural/urban
+    location: ""
   });
 
-  // ✅ Medical History
+  // ✅ STATE: Medical History
   const [medicalHistory, setMedicalHistory] = useState({
     diabetes: false,
     hypertension: false,
@@ -26,7 +26,7 @@ export default function App() {
     hepatitis: false
   });
 
-  // ✅ Symptoms
+  // ✅ STATE: Symptoms
   const [symptoms, setSymptoms] = useState({
     edema: false,
     fatigue: false,
@@ -38,7 +38,7 @@ export default function App() {
     hematuria: false
   });
 
-  // ✅ Physical Exam
+  // ✅ STATE: Physical Exam
   const [physicalExam, setPhysicalExam] = useState({
     sbp: "",
     dbp: "",
@@ -46,7 +46,7 @@ export default function App() {
     volumeStatus: ""
   });
 
-  // ✅ Lab Results
+  // ✅ STATE: Lab Results
   const [labs, setLabs] = useState({
     creatinine: "",
     egfr: "",
@@ -59,14 +59,166 @@ export default function App() {
     urineProtein24h: ""
   });
 
-  // ✅ Imaging
+  // ✅ STATE: Imaging
   const [imaging, setImaging] = useState({
     ultrasoundFindings: ""
   });
 
-  // ✅ Diagnosis / Recommendations
+  // ✅ STATE: Results
   const [diagnosis, setDiagnosis] = useState("");
   const [suggestions, setSuggestions] = useState([]);
   const [medications, setMedications] = useState([]);
   const [warnings, setWarnings] = useState([]);
 
+  return (
+    <div className="max-w-3xl mx-auto p-6 font-sans">
+      <h1 className="text-2xl font-bold mb-4">NephroGuide - Diagnosis Interface</h1>
+
+      <Card>
+        <h2 className="font-semibold">👤 Patient Profile (India)</h2>
+        <input
+          type="text"
+          placeholder="Name"
+          value={patientProfile.name}
+          onChange={(e) => setPatientProfile({ ...patientProfile, name: e.target.value })}
+          className="border p-2 block mb-2"
+        />
+        <input
+          type="number"
+          placeholder="Age"
+          value={patientProfile.age}
+          onChange={(e) => setPatientProfile({ ...patientProfile, age: e.target.value })}
+          className="border p-2 block mb-2"
+        />
+        <select
+          value={patientProfile.gender}
+          onChange={(e) => setPatientProfile({ ...patientProfile, gender: e.target.value })}
+          className="border p-2 block mb-2"
+        >
+          <option value="">Gender</option>
+          <option value="Male">Male</option>
+          <option value="Female">Female</option>
+          <option value="Other">Other</option>
+        </select>
+        <select
+          value={patientProfile.location}
+          onChange={(e) => setPatientProfile({ ...patientProfile, location: e.target.value })}
+          className="border p-2 block mb-2"
+        >
+          <option value="">Location</option>
+          <option value="Rural">Rural</option>
+          <option value="Urban">Urban</option>
+        </select>
+      </Card>
+
+      <Card>
+        <h2 className="font-semibold">🩺 Medical History</h2>
+        {["diabetes", "hypertension", "nsaidUse", "pastStoneDisease", "familyCKD", "tb", "hiv", "hepatitis"].map((item) => (
+          <label key={item} className="block mb-1">
+            <input
+              type="checkbox"
+              name={item}
+              checked={medicalHistory[item]}
+              onChange={(e) =>
+                setMedicalHistory({ ...medicalHistory, [item]: e.target.checked })
+              }
+            />{" "}
+            {item.replace(/([A-Z])/g, " $1").toUpperCase()}
+          </label>
+        ))}
+        {medicalHistory.diabetes && (
+          <input
+            type="text"
+            placeholder="Diabetes Duration (years)"
+            value={medicalHistory.diabetesDuration}
+            onChange={(e) => setMedicalHistory({ ...medicalHistory, diabetesDuration: e.target.value })}
+            className="border p-2 block mt-2"
+          />
+        )}
+        {medicalHistory.hypertension && (
+          <input
+            type="text"
+            placeholder="Hypertension Duration (years)"
+            value={medicalHistory.hypertensionDuration}
+            onChange={(e) => setMedicalHistory({ ...medicalHistory, hypertensionDuration: e.target.value })}
+            className="border p-2 block mt-2"
+          />
+        )}
+      </Card>
+
+      <Card>
+        <h2 className="font-semibold">🩹 Symptoms</h2>
+        {Object.keys(symptoms).map((item) => (
+          <label key={item} className="block mb-1">
+            <input
+              type="checkbox"
+              name={item}
+              checked={symptoms[item]}
+              onChange={(e) => setSymptoms({ ...symptoms, [item]: e.target.checked })}
+            />{" "}
+            {item.replace(/([A-Z])/g, " $1").toUpperCase()}
+          </label>
+        ))}
+      </Card>
+
+      <Card>
+        <h2 className="font-semibold">🩺 Physical Exam</h2>
+        <input
+          type="number"
+          placeholder="SBP (mmHg)"
+          value={physicalExam.sbp}
+          onChange={(e) => setPhysicalExam({ ...physicalExam, sbp: e.target.value })}
+          className="border p-2 block mb-2"
+        />
+        <input
+          type="number"
+          placeholder="DBP (mmHg)"
+          value={physicalExam.dbp}
+          onChange={(e) => setPhysicalExam({ ...physicalExam, dbp: e.target.value })}
+          className="border p-2 block mb-2"
+        />
+        <input
+          type="number"
+          placeholder="Weight (kg)"
+          value={physicalExam.weight}
+          onChange={(e) => setPhysicalExam({ ...physicalExam, weight: e.target.value })}
+          className="border p-2 block mb-2"
+        />
+        <select
+          value={physicalExam.volumeStatus}
+          onChange={(e) => setPhysicalExam({ ...physicalExam, volumeStatus: e.target.value })}
+          className="border p-2 block mb-2"
+        >
+          <option value="">Volume Status</option>
+          <option value="Hypovolemic">Hypovolemic</option>
+          <option value="Euvolemic">Euvolemic</option>
+          <option value="Hypervolemic">Hypervolemic</option>
+        </select>
+      </Card>
+
+      <Card>
+        <h2 className="font-semibold">🧪 Lab Results</h2>
+        {Object.entries(labs).map(([key, value]) => (
+          <input
+            key={key}
+            type="text"
+            placeholder={key.replace(/([A-Z])/g, " $1").toUpperCase()}
+            value={value}
+            onChange={(e) => setLabs({ ...labs, [key]: e.target.value })}
+            className="border p-2 block mb-2"
+          />
+        ))}
+      </Card>
+
+      <Card>
+        <h2 className="font-semibold">🖼️ Imaging</h2>
+        <textarea
+          placeholder="Ultrasound Findings"
+          value={imaging.ultrasoundFindings}
+          onChange={(e) => setImaging({ ...imaging, ultrasoundFindings: e.target.value })}
+          className="border p-2 w-full"
+        />
+      </Card>
+    </div>
+  );
+}
