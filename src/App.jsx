@@ -106,7 +106,7 @@ Reply in JSON with keys:
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          "Authorization": `Bearer YOUR_API_KEY`
+          "Authorization": `Bearer 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`
         },
         body: JSON.stringify({
           model: "gpt-4o",
