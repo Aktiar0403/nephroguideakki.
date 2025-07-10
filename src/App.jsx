@@ -198,36 +198,55 @@ Reply in JSON with keys:
         </select>
       </Card>
 
-      <Card>
-        <h2 className="font-semibold">🧪 Lab Results</h2>
-        <label className="block mb-2">Creatinine (Normal: 0.6–1.2 mg/dL)
-          <input type="text" value={labs.creatinine} onChange={(e) => setLabs({ ...labs, creatinine: e.target.value })} className="border p-2 w-full" />
-        </label>
-        <label className="block mb-2">eGFR (Normal: >90 mL/min)
-          <input type="text" value={labs.egfr} onChange={(e) => setLabs({ ...labs, egfr: e.target.value })} className="border p-2 w-full" />
-        </label>
-        <label className="block mb-2">Potassium (Normal: 3.5–5.0 mEq/L)
-          <input type="text" value={labs.potassium} onChange={(e) => setLabs({ ...labs, potassium: e.target.value })} className="border p-2 w-full" />
-        </label>
-        <label className="block mb-2">Hemoglobin (M: 13–17 / F: 12–15 g/dL)
-          <input type="text" value={labs.hemoglobin} onChange={(e) => setLabs({ ...labs, hemoglobin: e.target.value })} className="border p-2 w-full" />
-        </label>
-        <label className="block mb-2">Urinalysis Protein (Normal: Negative/Trace)
-          <input type="text" value={labs.urinalysisProtein} onChange={(e) => setLabs({ ...labs, urinalysisProtein: e.target.value })} className="border p-2 w-full" />
-        </label>
-        <label className="block mb-2">Urinalysis Blood (Normal: Negative)
-          <input type="text" value={labs.urinalysisBlood} onChange={(e) => setLabs({ ...labs, urinalysisBlood: e.target.value })} className="border p-2 w-full" />
-        </label>
-        <label className="block mb-2">ACR (Normal: <30 mg/g)
-          <input type="text" value={labs.acr} onChange={(e) => setLabs({ ...labs, acr: e.target.value })} className="border p-2 w-full" />
-        </label>
-        <label className="block mb-2">Spot Protein/Creatinine Ratio (Normal: <150 mg/g)
-          <input type="text" value={labs.spotProteinCreatinine} onChange={(e) => setLabs({ ...labs, spotProteinCreatinine: e.target.value })} className="border p-2 w-full" />
-        </label>
-        <label className="block mb-2">24h Urine Protein (Normal: <150 mg/day)
-          <input type="text" value={labs.urineProtein24h} onChange={(e) => setLabs({ ...labs, urineProtein24h: e.target.value })} className="border p-2 w-full" />
-        </label>
-      </Card>
+    <Card>
+  <h2 className="font-semibold">🧪 Lab Results</h2>
+  
+  <label className="block mb-2">
+    Creatinine (Normal: 0.6–1.2 mg/dL)
+    <input type="text" value={labs.creatinine} onChange={(e) => setLabs({ ...labs, creatinine: e.target.value })} className="border p-2 w-full" />
+  </label>
+
+  <label className="block mb-2">
+    eGFR (Normal: &gt;90 mL/min)
+    <input type="text" value={labs.egfr} onChange={(e) => setLabs({ ...labs, egfr: e.target.value })} className="border p-2 w-full" />
+  </label>
+
+  <label className="block mb-2">
+    Potassium (Normal: 3.5–5.0 mEq/L)
+    <input type="text" value={labs.potassium} onChange={(e) => setLabs({ ...labs, potassium: e.target.value })} className="border p-2 w-full" />
+  </label>
+
+  <label className="block mb-2">
+    Hemoglobin (M: 13–17 / F: 12–15 g/dL)
+    <input type="text" value={labs.hemoglobin} onChange={(e) => setLabs({ ...labs, hemoglobin: e.target.value })} className="border p-2 w-full" />
+  </label>
+
+  <label className="block mb-2">
+    Urinalysis Protein (Normal: Negative/Trace)
+    <input type="text" value={labs.urinalysisProtein} onChange={(e) => setLabs({ ...labs, urinalysisProtein: e.target.value })} className="border p-2 w-full" />
+  </label>
+
+  <label className="block mb-2">
+    Urinalysis Blood (Normal: Negative)
+    <input type="text" value={labs.urinalysisBlood} onChange={(e) => setLabs({ ...labs, urinalysisBlood: e.target.value })} className="border p-2 w-full" />
+  </label>
+
+  <label className="block mb-2">
+    ACR (Normal: &lt;30 mg/g)
+    <input type="text" value={labs.acr} onChange={(e) => setLabs({ ...labs, acr: e.target.value })} className="border p-2 w-full" />
+  </label>
+
+  <label className="block mb-2">
+    Spot Protein/Creatinine Ratio (Normal: &lt;150 mg/g)
+    <input type="text" value={labs.spotProteinCreatinine} onChange={(e) => setLabs({ ...labs, spotProteinCreatinine: e.target.value })} className="border p-2 w-full" />
+  </label>
+
+  <label className="block mb-2">
+    24h Urine Protein (Normal: &lt;150 mg/day)
+    <input type="text" value={labs.urineProtein24h} onChange={(e) => setLabs({ ...labs, urineProtein24h: e.target.value })} className="border p-2 w-full" />
+  </label>
+</Card>
+
 
       <Card>
         <h2 className="font-semibold">🖼️ Imaging</h2>
