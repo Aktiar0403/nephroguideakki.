@@ -226,13 +226,39 @@ Ultrasound Findings: ${imaging.ultrasoundFindings}
 
 <Card>
   <h2 className="font-semibold">🩺 Physical Exam</h2>
-  <input type="number" placeholder="SBP (mmHg)" value={physicalExam.sbp} onChange={(e) => setPhysicalExam({ ...physicalExam, sbp: e.target.value })} className="border p-2 block mb-2" />
-  <input type="number" placeholder="DBP (mmHg)" value={physicalExam.dbp} onChange={(e) => setPhysicalExam({ ...physicalExam, dbp: e.target.value })} className="border p-2 block mb-2" />
-  <input type="number" placeholder="Weight (kg)" value={physicalExam.weight} onChange={(e) => setPhysicalExam({ ...physicalExam, weight: e.target.value })} className="border p-2 block mb-2" />
-  <select value={physicalExam.volumeStatus} onChange={(e) => setPhysicalExam({ ...physicalExam, volumeStatus: e.target.value })} className="border p-2 block mb-2">
+  <input
+    type="number"
+    placeholder="SBP (mmHg)"
+    value={physicalExam.sbp}
+    onChange={(e) => setPhysicalExam({ ...physicalExam, sbp: e.target.value })}
+    className="border p-2 block mb-2"
+  />
+  <input
+    type="number"
+    placeholder="DBP (mmHg)"
+    value={physicalExam.dbp}
+    onChange={(e) => setPhysicalExam({ ...physicalExam, dbp: e.target.value })}
+    className="border p-2 block mb-2"
+  />
+  <input
+    type="number"
+    placeholder="Weight (kg)"
+    value={physicalExam.weight}
+    onChange={(e) => setPhysicalExam({ ...physicalExam, weight: e.target.value })}
+    className="border p-2 block mb-2"
+  />
+  <select
+    value={physicalExam.volumeStatus}
+    onChange={(e) => setPhysicalExam({ ...physicalExam, volumeStatus: e.target.value })}
+    className="border p-2 block mb-2"
+  >
     <option value="">Volume Status</option>
     <option value="Hypovolemic">Hypovolemic</option>
-    <option value="Euvolemic"
+    <option value="Euvolemic">Euvolemic</option>
+    <option value="Hypervolemic">Hypervolemic</option>
+  </select>
+</Card>
+
 
 
       <Button onClick={askAkI}>Ask Aktiar</Button>
