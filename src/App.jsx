@@ -109,7 +109,7 @@ Reply in JSON with keys:
           "Authorization": `Bearer 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`
         },
         body: JSON.stringify({
-          model: "gpt-4o",
+          model: "gpt-3.5-turbo",
           messages: [
             { role: "system", content: "You are a helpful nephrologist assistant." },
             { role: "user", content: prompt }
