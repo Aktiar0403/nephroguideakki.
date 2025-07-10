@@ -3,16 +3,8 @@ import Card from "./components/Card";
 import Button from "./components/Button";
 
 export default function App() {
-  const [ageGroup, setAgeGroup] = useState("");
   const [history, setHistory] = useState([]);
-  const [symptoms, setSymptoms] = useState({
-    edema: false,
-    fatigue: false,
-    nausea: false,
-    breathlessness: false,
-    flankPain: false,
-    urineOutput: ""
-  });
+  const [symptoms, setSymptoms] = useState({});
   const [labs, setLabs] = useState({
     creatinine: "",
     egfr: "",
@@ -24,6 +16,20 @@ export default function App() {
   const [suggestions, setSuggestions] = useState([]);
   const [medications, setMedications] = useState([]);
   const [warnings, setWarnings] = useState([]);
+
+  const handleCheckboxChange = (e, type) => {
+    const { name, checked } = e.target;
+    if (type === "history") {
+      setHistory(prev => checked ? [...prev, name] : prev.filter(item => item !== name));
+    } else if (type === "symptoms") {
+      setSymptoms(prev => ({ ...prev, [name]: checked }));
+    }
+  };
+
+  const handleLabChange = (e) => {
+    const { name, value } = e.target;
+    setLabs(prev => ({ ...prev, [name]: value }));
+  };
 
   const handleEvaluate = () => {
     let result = "";
@@ -87,7 +93,44 @@ export default function App() {
 
   return (
     <div className="max-w-3xl mx-auto p-6 font-sans">
-      <h1 className="text-2xl font-bold mb-4">NephroGuide</h1>
+      <h1 className="text-2xl font-bold mb-4">NephroGuide - Diagnosis Interface</h1>
+      
+      <Card>
+        <h2 className="font-semibold">Medical History</h2>
+        {["Diabetes", "Hypertension", "Hyperkalemia", "NSAID use"].map((item) => (
+          <label key={item} className="block">
+            <input type="checkbox" name={item} onChange={(e) => handleCheckboxChange(e, "history")} />
+            {` ${item}`}
+          </label>
+        ))}
+      </Card>
+
+      <Card>
+        <h2 className="font-semibold">Symptoms</h2>
+        {["edema", "fatigue", "nausea", "flankPain"].map((item) => (
+          <label key={item} className="block">
+            <input type="checkbox" name={item} onChange={(e) => handleCheckboxChange(e, "symptoms")} />
+            {` ${item}`}
+          </label>
+        ))}
+      </Card>
+
+      <Card>
+        <h2 className="font-semibold">Lab Results</h2>
+        <div className="grid grid-cols-2 gap-4">
+          <input type="number" name="creatinine" placeholder="Creatinine (mg/dL)" onChange={handleLabChange} className="border p-2" />
+          <input type="number" name="egfr" placeholder="eGFR (ml/min)" onChange={handleLabChange} className="border p-2" />
+          <input type="number" name="potassium" placeholder="Potassium (mEq/L)" onChange={handleLabChange} className="border p-2" />
+          <input type="number" name="hemoglobin" placeholder="Hemoglobin (g/dL)" onChange={handleLabChange} className="border p-2" />
+          <select name="proteinuria" onChange={handleLabChange} className="border p-2 col-span-2">
+            <option value="">Select Proteinuria Level</option>
+            <option value="None">None</option>
+            <option value="Mild">Mild</option>
+            <option value="Nephrotic Range">Nephrotic Range</option>
+          </select>
+        </div>
+      </Card>
+
       <Button onClick={handleEvaluate}>Evaluate</Button>
 
       {diagnosis && (
