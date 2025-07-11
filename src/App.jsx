@@ -62,6 +62,11 @@ export default function App() {
   const [medications, setMedications] = useState([]);
   const [warnings, setWarnings] = useState([]);
   const [patientSummary, setPatientSummary] = useState("");
+  const [takingMedicines, setTakingMedicines] = useState(false);
+const [medicinesList, setMedicinesList] = useState([
+  { name: "", duration: "" }
+]);
+
 
   function askAkI() {
     let result = "";
@@ -295,6 +300,66 @@ Determine the medical condition, diagnose, prescribe medicine and suggest furthe
   </div>
 </Accordion>
 <Accordion title="🩺 Medical History">
+    <hr className="my-3" />
+
+<label className="flex items-center space-x-2 mb-2">
+  <input
+    type="checkbox"
+    checked={takingMedicines}
+    onChange={(e) => setTakingMedicines(e.target.checked)}
+    className="accent-indigo-600"
+  />
+  <span className="text-slate-700">Currently Taking Medicines</span>
+</label>
+    {takingMedicines && (
+  <div className="space-y-3 mt-2">
+    {medicinesList.map((med, idx) => (
+      <div key={idx} className="grid md:grid-cols-2 gap-2">
+        <select
+          value={med.name}
+          onChange={(e) => {
+            const updated = [...medicinesList];
+            updated[idx].name = e.target.value;
+            setMedicinesList(updated);
+          }}
+          className="border rounded-md p-2 w-full focus:ring-indigo-500"
+        >
+          <option value="">Select Medicine</option>
+          <option>Enalapril</option>
+          <option>Ramipril</option>
+          <option>Losartan</option>
+          <option>Furosemide</option>
+          <option>Spironolactone</option>
+          <option>Hydrochlorothiazide</option>
+          <option>Potassium Binder</option>
+          <option>Calcium Channel Blocker</option>
+          <option>SGLT2 Inhibitor</option>
+          <option>Other</option>
+        </select>
+        <input
+          type="text"
+          placeholder="Duration (e.g. 6 months)"
+          value={med.duration}
+          onChange={(e) => {
+            const updated = [...medicinesList];
+            updated[idx].duration = e.target.value;
+            setMedicinesList(updated);
+          }}
+          className="border rounded-md p-2 w-full focus:ring-indigo-500"
+        />
+      </div>
+    ))}
+    <button
+      type="button"
+      onClick={() => setMedicinesList([...medicinesList, { name: "", duration: "" }])}
+      className="mt-2 text-indigo-600 underline"
+    >
+      + Add Another Medicine
+    </button>
+  </div>
+)}
+
+
   <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
     {["diabetes", "hypertension", "nsaidUse", "pastStoneDisease", "familyCKD", "tb", "hiv", "hepatitis"].map((item) => (
       <label key={item} className="flex items-center space-x-2">
