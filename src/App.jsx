@@ -445,10 +445,36 @@ Determine the medical condition, diagnose, prescribe medicine and suggest furthe
     </label>
   </div>
 </Accordion>
+<Accordion title="🖼️ Imaging - Kidney Ultrasound">
+  <div className="space-y-3">
+    <label className="block">
+      <span className="text-slate-700 text-sm">Ultrasound Findings</span>
+      <select
+        value={imaging.ultrasoundFindings}
+        onChange={(e) => setImaging({ ...imaging, ultrasoundFindings: e.target.value })}
+        className="border rounded-md p-2 w-full focus:ring-indigo-500"
+      >
+        <option value="">Select Finding</option>
+        <option>Normal kidneys</option>
+        <option>Increased echogenicity</option>
+        <option>Small shrunken kidneys</option>
+        <option>Asymmetry (one small)</option>
+        <option>Hydronephrosis</option>
+        <option>Cystic disease</option>
+        <option>Obstructive calculi</option>
+        <option>Other (describe below)</option>
+      </select>
+    </label>
+    <textarea
+      placeholder="Additional ultrasound notes (optional)"
+      value={imaging.notes || ""}
+      onChange={(e) => setImaging({ ...imaging, notes: e.target.value })}
+      className="border rounded-md p-2 w-full focus:ring-indigo-500"
+      rows={3}
+    />
+  </div>
+</Accordion>
 
-        <Accordion title="🖼️ Imaging">
-          {/* your imaging inputs here */}
-        </Accordion>
 
         <div className="flex flex-wrap gap-3 justify-center my-6">
           <Button onClick={askAkI}>Ask Aktiar</Button>
