@@ -148,6 +148,33 @@ export default function App() {
         "Refer to nephrologist if abnormalities persist"
       );
     }
+// ✅ Interpret Ultrasound Findings
+if (imaging.ultrasoundFindings) {
+  switch (imaging.ultrasoundFindings) {
+    case "Increased echogenicity":
+    case "Small shrunken kidneys":
+      result = result || "Chronic Kidney Disease (Ultrasound suggestive)";
+      suggest.push("Chronic structural changes noted on ultrasound");
+      break;
+    case "Hydronephrosis":
+      result = result || "Possible Obstructive Uropathy";
+      suggest.push("Consider further imaging (CT/IVP)", "Assess for urinary obstruction");
+      break;
+    case "Asymmetry (one small)":
+      suggest.push("Possible reflux nephropathy or chronic vascular disease");
+      break;
+    case "Cystic disease":
+      result = result || "Possible Polycystic Kidney Disease";
+      suggest.push("Consider family history, genetic counseling");
+      break;
+    case "Obstructive calculi":
+      result = result || "Possible Obstructive Nephropathy (Stones)";
+      suggest.push("Assess for hydronephrosis", "Consider urological referral");
+      break;
+    default:
+      break;
+  }
+}
 
     setDiagnosis(result);
     setSuggestions(suggest);
