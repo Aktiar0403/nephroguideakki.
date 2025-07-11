@@ -156,27 +156,52 @@ export default function App() {
     setWarnings(warns);
   }
 
-  function generatePatientSummary() {
-    let summary = `👤 Patient Profile
+ function generatePatientSummary() {
+  // Filter only checked history items
+  const historyItems = Object.entries(medicalHistory)
+    .filter(([k, v]) => v === true || (typeof v === "string" && v.trim() !== ""))
+    .map(([k, v]) =>
+      typeof v === "boolean" ? `${k.replace(/([A-Z])/g, " $1")}` : `${k.replace(/([A-Z])/g, " $1")}: ${v}`
+    )
+    .join("\n");
+
+  // Filter only checked symptoms
+  const symptomItems = Object.entries(symptoms)
+    .filter(([k, v]) => v === true)
+    .map(([k]) => k.replace(/([A-Z])/g, " $1"))
+    .join("\n");
+
+  // Include all labs as they are
+  const labItems = Object.entries(labs)
+    .filter(([_, v]) => v.trim() !== "")
+    .map(([k, v]) => `${k.replace(/([A-Z])/g, " $1")}: ${v}`)
+    .join("\n");
+
+  let summary = `👤 Patient Profile
 Name: ${patientProfile.name}
 Age: ${patientProfile.age}
 Gender: ${patientProfile.gender}
 Location: ${patientProfile.location}
 
 🩺 Medical History
-${Object.entries(medicalHistory).map(([k, v]) => `${k}: ${v}`).join("\n")}
+${historyItems || "No significant history"}
 
 🩹 Symptoms
-${Object.entries(symptoms).map(([k, v]) => `${k}: ${v}`).join("\n")}
+${symptomItems || "No reported symptoms"}
 
 🧪 Lab Results
-${Object.entries(labs).map(([k, v]) => `${k}: ${v}`).join("\n")}
+${labItems || "No lab results entered"}
 
 🖼️ Imaging
-Ultrasound Findings: ${imaging.ultrasoundFindings}
+Ultrasound Findings: ${imaging.ultrasoundFindings || "Not provided"}
+
+🧭
+Determine the medical condition, diagnose, prescribe medicine and suggest further tests if required.
 `;
-    setPatientSummary(summary);
-  }
+
+  setPatientSummary(summary);
+}
+
 
   function copySummary() {
     navigator.clipboard.writeText(patientSummary);
