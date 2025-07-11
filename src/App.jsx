@@ -241,14 +241,21 @@ Determine the medical condition, diagnose, prescribe medicine and suggest furthe
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-slate-50 to-slate-100 p-4">
-      <div className="max-w-3xl mx-auto bg-white rounded-xl shadow-lg p-6">
-       <h1 className="text-3xl font-bold text-indigo-700 mb-2 text-center">
-  NephroCare Pro
-</h1>
-<p className="text-center text-green-600 mb-6 italic">
-  A Doctor’s Friend
-</p>
+   <div className="bg-gradient-to-r from-indigo-600 via-indigo-500 to-indigo-400 rounded-lg shadow-lg p-4 mb-6 text-center">
+  <div className="flex items-center justify-center gap-3">
+    <img
+      src="/kidney.png"
+      alt="Kidney Icon"
+      className="h-10 w-10 md:h-12 md:w-12 object-contain"
+    />
+    <h1 className="text-3xl md:text-4xl font-bold text-white">
+      NephroCare Pro
+    </h1>
+  </div>
+  <p className="text-green-100 italic text-sm md:text-base mt-1">
+    A Doctor’s Friend
+  </p>
+</div>
 
 <Accordion title="👤 Patient Profile">
   <div className="grid gap-3 md:grid-cols-2">
