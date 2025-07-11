@@ -63,6 +63,7 @@ export default function App() {
   const [warnings, setWarnings] = useState([]);
   const [patientSummary, setPatientSummary] = useState("");
 
+  // Diagnostic logic
   function askAkI() {
     let result = "";
     let suggest = [];
@@ -193,243 +194,214 @@ Ultrasound Findings: ${imaging.ultrasoundFindings}
   }
 
   return (
-    <div className="max-w-3xl mx-auto p-6 font-sans">
-      <h1 className="text-2xl font-bold mb-4">NephroGuide - Diagnosis Interface</h1>
+    <div className="min-h-screen bg-gradient-to-b from-slate-50 to-slate-100 p-4">
+      <div className="max-w-3xl mx-auto bg-white rounded-xl shadow-lg p-6">
+        <h1 className="text-3xl font-bold text-indigo-700 mb-6 text-center">
+          NephroGuide - Diagnosis Interface
+        </h1>
 
-      <Card>
-        <h2 className="font-semibold">👤 Patient Profile</h2>
-        <input type="text" placeholder="Name" value={patientProfile.name} onChange={(e) => setPatientProfile({ ...patientProfile, name: e.target.value })} className="border p-2 block mb-2" />
-        <input type="number" placeholder="Age" value={patientProfile.age} onChange={(e) => setPatientProfile({ ...patientProfile, age: e.target.value })} className="border p-2 block mb-2" />
-        <select value={patientProfile.gender} onChange={(e) => setPatientProfile({ ...patientProfile, gender: e.target.value })} className="border p-2 block mb-2">
-          <option value="">Gender</option>
-          <option value="Male">Male</option>
-          <option value="Female">Female</option>
-          <option value="Other">Other</option>
-        </select>
-        <select value={patientProfile.location} onChange={(e) => setPatientProfile({ ...patientProfile, location: e.target.value })} className="border p-2 block mb-2">
-          <option value="">Location</option>
-          <option value="Rural">Rural</option>
-          <option value="Urban">Urban</option>
-        </select>
-      </Card>
-
-      <Card>
-        <h2 className="font-semibold">🩺 Medical History</h2>
-        {["diabetes", "hypertension", "nsaidUse", "pastStoneDisease", "familyCKD", "tb", "hiv", "hepatitis"].map((item) => (
-          <label key={item} className="block mb-1">
-            <input type="checkbox" checked={medicalHistory[item]} onChange={(e) => setMedicalHistory({ ...medicalHistory, [item]: e.target.checked })} /> {item.replace(/([A-Z])/g, " $1").toUpperCase()}
-          </label>
-        ))}
-        {medicalHistory.diabetes && (
-          <input type="text" placeholder="Diabetes Duration (years)" value={medicalHistory.diabetesDuration} onChange={(e) => setMedicalHistory({ ...medicalHistory, diabetesDuration: e.target.value })} className="border p-2 block mt-2" />
-        )}
-        {medicalHistory.hypertension && (
-          <input type="text" placeholder="Hypertension Duration (years)" value={medicalHistory.hypertensionDuration} onChange={(e) => setMedicalHistory({ ...medicalHistory, hypertensionDuration: e.target.value })} className="border p-2 block mt-2" />
-        )}
-      </Card>
-      <Card>
-        <h2 className="font-semibold">🩹 Symptoms</h2>
-        {Object.keys(symptoms).map((item) => (
-          <label key={item} className="block mb-1">
+        {/* Profile */}
+        <Card className="mb-4">
+          <h2 className="text-lg font-semibold text-indigo-600 mb-3">👤 Patient Profile</h2>
+          <div className="grid gap-3 md:grid-cols-2">
+            <input type="text" placeholder="Name" value={patientProfile.name} onChange={(e) => setPatientProfile({ ...patientProfile, name: e.target.value })} className="border rounded-md p-2 w-full focus:ring-indigo-500" />
+            <input type="number" placeholder="Age" value={patientProfile.age} onChange={(e) => setPatientProfile({ ...patientProfile, age: e.target.value })} className="border rounded-md p-2 w-full focus:ring-indigo-500" />
+            <select value={patientProfile.gender} onChange={(e) => setPatientProfile({ ...patientProfile, gender: e.target.value })} className="border rounded-md p-2 w-full focus:ring-indigo-500">
+              <option value="">Gender</option>
+              <option>Male</option>
+              <option>Female</option>
+              <option>Other</option>
+            </select>
+            <select value={patientProfile.location} onChange={(e) => setPatientProfile({ ...patientProfile, location: e.target.value })} className="border rounded-md p-2 w-full focus:ring-indigo-500">
+              <option value="">Location</option>
+              <option>Rural</option>
+              <option>Urban</option>
+            </select>
+          </div>
+        </Card>
+        {/* Medical History */}
+        <Card className="mb-4">
+          <h2 className="text-lg font-semibold text-indigo-600 mb-3">🩺 Medical History</h2>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
+            {["diabetes", "hypertension", "nsaidUse", "pastStoneDisease", "familyCKD", "tb", "hiv", "hepatitis"].map((item) => (
+              <label key={item} className="flex items-center space-x-2">
+                <input
+                  type="checkbox"
+                  checked={medicalHistory[item]}
+                  onChange={(e) =>
+                    setMedicalHistory({ ...medicalHistory, [item]: e.target.checked })
+                  }
+                  className="accent-indigo-600"
+                />
+                <span className="text-slate-700">{item.replace(/([A-Z])/g, " $1").toUpperCase()}</span>
+              </label>
+            ))}
+          </div>
+          {medicalHistory.diabetes && (
             <input
-              type="checkbox"
-              checked={symptoms[item]}
-              onChange={(e) =>
-                setSymptoms({ ...symptoms, [item]: e.target.checked })
-              }
-            />{" "}
-            {item.replace(/([A-Z])/g, " $1").toUpperCase()}
-          </label>
-        ))}
-      </Card>
-
-      <Card>
-        <h2 className="font-semibold">🩺 Physical Exam</h2>
-        <input
-          type="number"
-          placeholder="SBP (mmHg)"
-          value={physicalExam.sbp}
-          onChange={(e) => setPhysicalExam({ ...physicalExam, sbp: e.target.value })}
-          className="border p-2 block mb-2"
-        />
-        <input
-          type="number"
-          placeholder="DBP (mmHg)"
-          value={physicalExam.dbp}
-          onChange={(e) => setPhysicalExam({ ...physicalExam, dbp: e.target.value })}
-          className="border p-2 block mb-2"
-        />
-        <input
-          type="number"
-          placeholder="Weight (kg)"
-          value={physicalExam.weight}
-          onChange={(e) => setPhysicalExam({ ...physicalExam, weight: e.target.value })}
-          className="border p-2 block mb-2"
-        />
-        <select
-          value={physicalExam.volumeStatus}
-          onChange={(e) =>
-            setPhysicalExam({ ...physicalExam, volumeStatus: e.target.value })
-          }
-          className="border p-2 block mb-2"
-        >
-          <option value="">Volume Status</option>
-          <option value="Hypovolemic">Hypovolemic</option>
-          <option value="Euvolemic">Euvolemic</option>
-          <option value="Hypervolemic">Hypervolemic</option>
-        </select>
-      </Card>
-            <Card>
-        <h2 className="font-semibold">🧪 Lab Results</h2>
-
-        <label className="block mb-2">
-          Creatinine (Normal: 0.6–1.2 mg/dL)
-          <input
-            type="text"
-            value={labs.creatinine}
-            onChange={(e) => setLabs({ ...labs, creatinine: e.target.value })}
-            className="border p-2 w-full"
-          />
-        </label>
-
-        <label className="block mb-2">
-          eGFR (Normal: &gt;90 mL/min)
-          <input
-            type="text"
-            value={labs.egfr}
-            onChange={(e) => setLabs({ ...labs, egfr: e.target.value })}
-            className="border p-2 w-full"
-          />
-        </label>
-
-        <label className="block mb-2">
-          Potassium (Normal: 3.5–5.0 mEq/L)
-          <input
-            type="text"
-            value={labs.potassium}
-            onChange={(e) => setLabs({ ...labs, potassium: e.target.value })}
-            className="border p-2 w-full"
-          />
-        </label>
-
-        <label className="block mb-2">
-          Hemoglobin (M: 13–17 / F: 12–15 g/dL)
-          <input
-            type="text"
-            value={labs.hemoglobin}
-            onChange={(e) => setLabs({ ...labs, hemoglobin: e.target.value })}
-            className="border p-2 w-full"
-          />
-        </label>
-
-        <label className="block mb-2">
-          Urinalysis Protein (Normal: Negative/Trace)
-          <input
-            type="text"
-            value={labs.urinalysisProtein}
-            onChange={(e) => setLabs({ ...labs, urinalysisProtein: e.target.value })}
-            className="border p-2 w-full"
-          />
-        </label>
-
-        <label className="block mb-2">
-          Urinalysis Blood (Normal: Negative)
-          <input
-            type="text"
-            value={labs.urinalysisBlood}
-            onChange={(e) => setLabs({ ...labs, urinalysisBlood: e.target.value })}
-            className="border p-2 w-full"
-          />
-        </label>
-
-        <label className="block mb-2">
-          ACR (Normal: &lt;30 mg/g)
-          <input
-            type="text"
-            value={labs.acr}
-            onChange={(e) => setLabs({ ...labs, acr: e.target.value })}
-            className="border p-2 w-full"
-          />
-        </label>
-
-        <label className="block mb-2">
-          Spot Protein/Creatinine Ratio (Normal: &lt;150 mg/g)
-          <input
-            type="text"
-            value={labs.spotProteinCreatinine}
-            onChange={(e) => setLabs({ ...labs, spotProteinCreatinine: e.target.value })}
-            className="border p-2 w-full"
-          />
-        </label>
-
-        <label className="block mb-2">
-          24h Urine Protein (Normal: &lt;150 mg/day)
-          <input
-            type="text"
-            value={labs.urineProtein24h}
-            onChange={(e) => setLabs({ ...labs, urineProtein24h: e.target.value })}
-            className="border p-2 w-full"
-          />
-        </label>
-      </Card>
-
-      <Card>
-        <h2 className="font-semibold">🖼️ Imaging</h2>
-        <textarea
-          placeholder="Ultrasound Findings"
-          value={imaging.ultrasoundFindings}
-          onChange={(e) => setImaging({ ...imaging, ultrasoundFindings: e.target.value })}
-          className="border p-2 w-full"
-        />
-      </Card>
-
-      <Button onClick={askAkI}>Ask Aktiar</Button>
-      <Button onClick={generatePatientSummary}>Show Patient Data Summary</Button>
-
-      {diagnosis && (
-        <Card>
-          <p><strong>Diagnosis:</strong> {diagnosis}</p>
-          {suggestions.length > 0 && (
-            <>
-              <strong>Recommendations:</strong>
-              <ul className="list-disc pl-5">
-                {suggestions.map((s, i) => <li key={i}>{s}</li>)}
-              </ul>
-            </>
+              type="text"
+              placeholder="Diabetes Duration (years)"
+              value={medicalHistory.diabetesDuration}
+              onChange={(e) => setMedicalHistory({ ...medicalHistory, diabetesDuration: e.target.value })}
+              className="mt-2 border rounded-md p-2 w-full focus:ring-indigo-500"
+            />
           )}
-          {medications.length > 0 && (
-            <>
-              <strong>Medications:</strong>
-              <ul className="list-disc pl-5">
-                {medications.map((m, i) => <li key={i}>{m}</li>)}
-              </ul>
-            </>
-          )}
-          {warnings.length > 0 && (
-            <>
-              <strong className="text-red-600">Warnings:</strong>
-              <ul className="list-disc pl-5 text-red-600">
-                {warnings.map((w, i) => <li key={i}>{w}</li>)}
-              </ul>
-            </>
+          {medicalHistory.hypertension && (
+            <input
+              type="text"
+              placeholder="Hypertension Duration (years)"
+              value={medicalHistory.hypertensionDuration}
+              onChange={(e) => setMedicalHistory({ ...medicalHistory, hypertensionDuration: e.target.value })}
+              className="mt-2 border rounded-md p-2 w-full focus:ring-indigo-500"
+            />
           )}
         </Card>
-      )}
 
-      {patientSummary && (
-        <Card>
-          <h2 className="font-semibold">📋 Patient Data Summary (for ChatGPT)</h2>
+        {/* Symptoms */}
+        <Card className="mb-4">
+          <h2 className="text-lg font-semibold text-indigo-600 mb-3">🩹 Symptoms</h2>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
+            {Object.keys(symptoms).map((item) => (
+              <label key={item} className="flex items-center space-x-2">
+                <input
+                  type="checkbox"
+                  checked={symptoms[item]}
+                  onChange={(e) =>
+                    setSymptoms({ ...symptoms, [item]: e.target.checked })
+                  }
+                  className="accent-indigo-600"
+                />
+                <span className="text-slate-700">{item.replace(/([A-Z])/g, " $1").toUpperCase()}</span>
+              </label>
+            ))}
+          </div>
+        </Card>
+
+        {/* Physical Exam */}
+        <Card className="mb-4">
+          <h2 className="text-lg font-semibold text-indigo-600 mb-3">🩺 Physical Exam</h2>
+          <div className="grid gap-3 md:grid-cols-2">
+            <input type="number" placeholder="SBP (mmHg)" value={physicalExam.sbp} onChange={(e) => setPhysicalExam({ ...physicalExam, sbp: e.target.value })} className="border rounded-md p-2 w-full focus:ring-indigo-500" />
+            <input type="number" placeholder="DBP (mmHg)" value={physicalExam.dbp} onChange={(e) => setPhysicalExam({ ...physicalExam, dbp: e.target.value })} className="border rounded-md p-2 w-full focus:ring-indigo-500" />
+            <input type="number" placeholder="Weight (kg)" value={physicalExam.weight} onChange={(e) => setPhysicalExam({ ...physicalExam, weight: e.target.value })} className="border rounded-md p-2 w-full focus:ring-indigo-500" />
+            <select value={physicalExam.volumeStatus} onChange={(e) => setPhysicalExam({ ...physicalExam, volumeStatus: e.target.value })} className="border rounded-md p-2 w-full focus:ring-indigo-500">
+              <option value="">Volume Status</option>
+              <option value="Hypovolemic">Hypovolemic</option>
+              <option value="Euvolemic">Euvolemic</option>
+              <option value="Hypervolemic">Hypervolemic</option>
+            </select>
+          </div>
+        </Card>
+        {/* Lab Results */}
+        <Card className="mb-4">
+          <h2 className="text-lg font-semibold text-indigo-600 mb-3">🧪 Lab Results</h2>
+          <div className="grid gap-3 md:grid-cols-2">
+            <label className="block">
+              <span className="text-slate-700 text-sm">Creatinine (0.6–1.2 mg/dL)</span>
+              <input type="text" value={labs.creatinine} onChange={(e) => setLabs({ ...labs, creatinine: e.target.value })} className="border rounded-md p-2 w-full focus:ring-indigo-500" />
+            </label>
+            <label className="block">
+              <span className="text-slate-700 text-sm">eGFR (&gt;90 mL/min)</span>
+              <input type="text" value={labs.egfr} onChange={(e) => setLabs({ ...labs, egfr: e.target.value })} className="border rounded-md p-2 w-full focus:ring-indigo-500" />
+            </label>
+            <label className="block">
+              <span className="text-slate-700 text-sm">Potassium (3.5–5.0 mEq/L)</span>
+              <input type="text" value={labs.potassium} onChange={(e) => setLabs({ ...labs, potassium: e.target.value })} className="border rounded-md p-2 w-full focus:ring-indigo-500" />
+            </label>
+            <label className="block">
+              <span className="text-slate-700 text-sm">Hemoglobin (M:13–17 / F:12–15 g/dL)</span>
+              <input type="text" value={labs.hemoglobin} onChange={(e) => setLabs({ ...labs, hemoglobin: e.target.value })} className="border rounded-md p-2 w-full focus:ring-indigo-500" />
+            </label>
+            <label className="block">
+              <span className="text-slate-700 text-sm">Urinalysis Protein (Negative/Trace)</span>
+              <input type="text" value={labs.urinalysisProtein} onChange={(e) => setLabs({ ...labs, urinalysisProtein: e.target.value })} className="border rounded-md p-2 w-full focus:ring-indigo-500" />
+            </label>
+            <label className="block">
+              <span className="text-slate-700 text-sm">Urinalysis Blood (Negative)</span>
+              <input type="text" value={labs.urinalysisBlood} onChange={(e) => setLabs({ ...labs, urinalysisBlood: e.target.value })} className="border rounded-md p-2 w-full focus:ring-indigo-500" />
+            </label>
+            <label className="block">
+              <span className="text-slate-700 text-sm">ACR (&lt;30 mg/g)</span>
+              <input type="text" value={labs.acr} onChange={(e) => setLabs({ ...labs, acr: e.target.value })} className="border rounded-md p-2 w-full focus:ring-indigo-500" />
+            </label>
+            <label className="block">
+              <span className="text-slate-700 text-sm">Spot Protein/Creatinine (&lt;150 mg/g)</span>
+              <input type="text" value={labs.spotProteinCreatinine} onChange={(e) => setLabs({ ...labs, spotProteinCreatinine: e.target.value })} className="border rounded-md p-2 w-full focus:ring-indigo-500" />
+            </label>
+            <label className="block">
+              <span className="text-slate-700 text-sm">24h Urine Protein (&lt;150 mg/day)</span>
+              <input type="text" value={labs.urineProtein24h} onChange={(e) => setLabs({ ...labs, urineProtein24h: e.target.value })} className="border rounded-md p-2 w-full focus:ring-indigo-500" />
+            </label>
+          </div>
+        </Card>
+
+        {/* Imaging */}
+        <Card className="mb-4">
+          <h2 className="text-lg font-semibold text-indigo-600 mb-3">🖼️ Imaging</h2>
           <textarea
-            value={patientSummary}
-            readOnly
-            rows={10}
-            className="border p-2 w-full mb-2"
+            placeholder="Ultrasound Findings"
+            value={imaging.ultrasoundFindings}
+            onChange={(e) => setImaging({ ...imaging, ultrasoundFindings: e.target.value })}
+            className="border rounded-md p-2 w-full focus:ring-indigo-500"
+            rows={3}
           />
-          <Button onClick={copySummary}>Copy to Clipboard</Button>
-          <Button onClick={openChatGPTWithSummary}>Search Online</Button>
         </Card>
-      )}
+
+        {/* Action Buttons */}
+        <div className="flex flex-wrap gap-3 justify-center mb-6">
+          <Button onClick={askAkI} className="bg-indigo-600 text-white px-4 py-2 rounded-md shadow hover:bg-indigo-700 transition">Ask Aktiar</Button>
+          <Button onClick={generatePatientSummary} className="bg-green-600 text-white px-4 py-2 rounded-md shadow hover:bg-green-700 transition">Show Patient Data Summary</Button>
+        </div>
+
+        {/* Results */}
+        {diagnosis && (
+          <Card className="mb-4 bg-indigo-50 border-indigo-200">
+            <h3 className="text-indigo-700 font-semibold mb-2">Diagnosis</h3>
+            <p className="mb-2">{diagnosis}</p>
+            {suggestions.length > 0 && (
+              <>
+                <h4 className="font-semibold mb-1">Recommendations:</h4>
+                <ul className="list-disc pl-5 mb-2 text-slate-700">
+                  {suggestions.map((s, i) => <li key={i}>{s}</li>)}
+                </ul>
+              </>
+            )}
+            {medications.length > 0 && (
+              <>
+                <h4 className="font-semibold mb-1">Medications:</h4>
+                <ul className="list-disc pl-5 mb-2 text-slate-700">
+                  {medications.map((m, i) => <li key={i}>{m}</li>)}
+                </ul>
+              </>
+            )}
+            {warnings.length > 0 && (
+              <>
+                <h4 className="font-semibold text-red-600 mb-1">Warnings:</h4>
+                <ul className="list-disc pl-5 text-red-600">
+                  {warnings.map((w, i) => <li key={i}>{w}</li>)}
+                </ul>
+              </>
+            )}
+          </Card>
+        )}
+
+        {/* Patient Summary */}
+        {patientSummary && (
+          <Card className="mb-4 bg-green-50 border-green-200">
+            <h3 className="text-green-700 font-semibold mb-2">📋 Patient Data Summary (for ChatGPT)</h3>
+            <textarea
+              value={patientSummary}
+              readOnly
+              rows={10}
+              className="border rounded-md p-2 w-full mb-3 focus:ring-green-500"
+            />
+            <div className="flex gap-3">
+              <Button onClick={copySummary} className="bg-green-600 text-white px-4 py-2 rounded-md shadow hover:bg-green-700 transition">Copy to Clipboard</Button>
+              <Button onClick={openChatGPTWithSummary} className="bg-blue-600 text-white px-4 py-2 rounded-md shadow hover:bg-blue-700 transition">Search Online</Button>
+            </div>
+          </Card>
+        )}
+      </div>
     </div>
   );
 }
-
