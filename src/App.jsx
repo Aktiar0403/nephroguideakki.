@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import Card from "./components/Card";
+import Accordion from "./components/Accordion";
 import Button from "./components/Button";
 
 export default function App() {
@@ -63,7 +63,6 @@ export default function App() {
   const [warnings, setWarnings] = useState([]);
   const [patientSummary, setPatientSummary] = useState("");
 
-  // Diagnostic logic
   function askAkI() {
     let result = "";
     let suggest = [];
@@ -156,28 +155,25 @@ export default function App() {
     setWarnings(warns);
   }
 
- function generatePatientSummary() {
-  // Filter only checked history items
-  const historyItems = Object.entries(medicalHistory)
-    .filter(([k, v]) => v === true || (typeof v === "string" && v.trim() !== ""))
-    .map(([k, v]) =>
-      typeof v === "boolean" ? `${k.replace(/([A-Z])/g, " $1")}` : `${k.replace(/([A-Z])/g, " $1")}: ${v}`
-    )
-    .join("\n");
+  function generatePatientSummary() {
+    const historyItems = Object.entries(medicalHistory)
+      .filter(([k, v]) => v === true || (typeof v === "string" && v.trim() !== ""))
+      .map(([k, v]) =>
+        typeof v === "boolean" ? `${k.replace(/([A-Z])/g, " $1")}` : `${k.replace(/([A-Z])/g, " $1")}: ${v}`
+      )
+      .join("\n");
 
-  // Filter only checked symptoms
-  const symptomItems = Object.entries(symptoms)
-    .filter(([k, v]) => v === true)
-    .map(([k]) => k.replace(/([A-Z])/g, " $1"))
-    .join("\n");
+    const symptomItems = Object.entries(symptoms)
+      .filter(([k, v]) => v === true)
+      .map(([k]) => k.replace(/([A-Z])/g, " $1"))
+      .join("\n");
 
-  // Include all labs as they are
-  const labItems = Object.entries(labs)
-    .filter(([_, v]) => v.trim() !== "")
-    .map(([k, v]) => `${k.replace(/([A-Z])/g, " $1")}: ${v}`)
-    .join("\n");
+    const labItems = Object.entries(labs)
+      .filter(([_, v]) => v.trim() !== "")
+      .map(([k, v]) => `${k.replace(/([A-Z])/g, " $1")}: ${v}`)
+      .join("\n");
 
-  let summary = `👤 Patient Profile
+    let summary = `👤 Patient Profile
 Name: ${patientProfile.name}
 Age: ${patientProfile.age}
 Gender: ${patientProfile.gender}
@@ -199,9 +195,8 @@ Ultrasound Findings: ${imaging.ultrasoundFindings || "Not provided"}
 Determine the medical condition, diagnose, prescribe medicine and suggest further tests if required.
 `;
 
-  setPatientSummary(summary);
-}
-
+    setPatientSummary(summary);
+  }
 
   function copySummary() {
     navigator.clipboard.writeText(patientSummary);
@@ -225,206 +220,57 @@ Determine the medical condition, diagnose, prescribe medicine and suggest furthe
           NephroGuide - Diagnosis Interface
         </h1>
 
-        {/* Profile */}
-        <Card className="mb-4">
-          <h2 className="text-lg font-semibold text-indigo-600 mb-3">👤 Patient Profile</h2>
-          <div className="grid gap-3 md:grid-cols-2">
-            <input type="text" placeholder="Name" value={patientProfile.name} onChange={(e) => setPatientProfile({ ...patientProfile, name: e.target.value })} className="border rounded-md p-2 w-full focus:ring-indigo-500" />
-            <input type="number" placeholder="Age" value={patientProfile.age} onChange={(e) => setPatientProfile({ ...patientProfile, age: e.target.value })} className="border rounded-md p-2 w-full focus:ring-indigo-500" />
-            <select value={patientProfile.gender} onChange={(e) => setPatientProfile({ ...patientProfile, gender: e.target.value })} className="border rounded-md p-2 w-full focus:ring-indigo-500">
-              <option value="">Gender</option>
-              <option>Male</option>
-              <option>Female</option>
-              <option>Other</option>
-            </select>
-            <select value={patientProfile.location} onChange={(e) => setPatientProfile({ ...patientProfile, location: e.target.value })} className="border rounded-md p-2 w-full focus:ring-indigo-500">
-              <option value="">Location</option>
-              <option>Rural</option>
-              <option>Urban</option>
-            </select>
-          </div>
-        </Card>
-        {/* Medical History */}
-        <Card className="mb-4">
-          <h2 className="text-lg font-semibold text-indigo-600 mb-3">🩺 Medical History</h2>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
-            {["diabetes", "hypertension", "nsaidUse", "pastStoneDisease", "familyCKD", "tb", "hiv", "hepatitis"].map((item) => (
-              <label key={item} className="flex items-center space-x-2">
-                <input
-                  type="checkbox"
-                  checked={medicalHistory[item]}
-                  onChange={(e) =>
-                    setMedicalHistory({ ...medicalHistory, [item]: e.target.checked })
-                  }
-                  className="accent-indigo-600"
-                />
-                <span className="text-slate-700">{item.replace(/([A-Z])/g, " $1").toUpperCase()}</span>
-              </label>
-            ))}
-          </div>
-          {medicalHistory.diabetes && (
-            <input
-              type="text"
-              placeholder="Diabetes Duration (years)"
-              value={medicalHistory.diabetesDuration}
-              onChange={(e) => setMedicalHistory({ ...medicalHistory, diabetesDuration: e.target.value })}
-              className="mt-2 border rounded-md p-2 w-full focus:ring-indigo-500"
-            />
-          )}
-          {medicalHistory.hypertension && (
-            <input
-              type="text"
-              placeholder="Hypertension Duration (years)"
-              value={medicalHistory.hypertensionDuration}
-              onChange={(e) => setMedicalHistory({ ...medicalHistory, hypertensionDuration: e.target.value })}
-              className="mt-2 border rounded-md p-2 w-full focus:ring-indigo-500"
-            />
-          )}
-        </Card>
+        <Accordion title="👤 Patient Profile">
+          {/* your profile inputs here */}
+        </Accordion>
 
-        {/* Symptoms */}
-        <Card className="mb-4">
-          <h2 className="text-lg font-semibold text-indigo-600 mb-3">🩹 Symptoms</h2>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
-            {Object.keys(symptoms).map((item) => (
-              <label key={item} className="flex items-center space-x-2">
-                <input
-                  type="checkbox"
-                  checked={symptoms[item]}
-                  onChange={(e) =>
-                    setSymptoms({ ...symptoms, [item]: e.target.checked })
-                  }
-                  className="accent-indigo-600"
-                />
-                <span className="text-slate-700">{item.replace(/([A-Z])/g, " $1").toUpperCase()}</span>
-              </label>
-            ))}
-          </div>
-        </Card>
+        <Accordion title="🩺 Medical History">
+          {/* your medical history inputs here */}
+        </Accordion>
 
-        {/* Physical Exam */}
-        <Card className="mb-4">
-          <h2 className="text-lg font-semibold text-indigo-600 mb-3">🩺 Physical Exam</h2>
-          <div className="grid gap-3 md:grid-cols-2">
-            <input type="number" placeholder="SBP (mmHg)" value={physicalExam.sbp} onChange={(e) => setPhysicalExam({ ...physicalExam, sbp: e.target.value })} className="border rounded-md p-2 w-full focus:ring-indigo-500" />
-            <input type="number" placeholder="DBP (mmHg)" value={physicalExam.dbp} onChange={(e) => setPhysicalExam({ ...physicalExam, dbp: e.target.value })} className="border rounded-md p-2 w-full focus:ring-indigo-500" />
-            <input type="number" placeholder="Weight (kg)" value={physicalExam.weight} onChange={(e) => setPhysicalExam({ ...physicalExam, weight: e.target.value })} className="border rounded-md p-2 w-full focus:ring-indigo-500" />
-            <select value={physicalExam.volumeStatus} onChange={(e) => setPhysicalExam({ ...physicalExam, volumeStatus: e.target.value })} className="border rounded-md p-2 w-full focus:ring-indigo-500">
-              <option value="">Volume Status</option>
-              <option value="Hypovolemic">Hypovolemic</option>
-              <option value="Euvolemic">Euvolemic</option>
-              <option value="Hypervolemic">Hypervolemic</option>
-            </select>
-          </div>
-        </Card>
-        {/* Lab Results */}
-        <Card className="mb-4">
-          <h2 className="text-lg font-semibold text-indigo-600 mb-3">🧪 Lab Results</h2>
-          <div className="grid gap-3 md:grid-cols-2">
-            <label className="block">
-              <span className="text-slate-700 text-sm">Creatinine (0.6–1.2 mg/dL)</span>
-              <input type="text" value={labs.creatinine} onChange={(e) => setLabs({ ...labs, creatinine: e.target.value })} className="border rounded-md p-2 w-full focus:ring-indigo-500" />
-            </label>
-            <label className="block">
-              <span className="text-slate-700 text-sm">eGFR (&gt;90 mL/min)</span>
-              <input type="text" value={labs.egfr} onChange={(e) => setLabs({ ...labs, egfr: e.target.value })} className="border rounded-md p-2 w-full focus:ring-indigo-500" />
-            </label>
-            <label className="block">
-              <span className="text-slate-700 text-sm">Potassium (3.5–5.0 mEq/L)</span>
-              <input type="text" value={labs.potassium} onChange={(e) => setLabs({ ...labs, potassium: e.target.value })} className="border rounded-md p-2 w-full focus:ring-indigo-500" />
-            </label>
-            <label className="block">
-              <span className="text-slate-700 text-sm">Hemoglobin (M:13–17 / F:12–15 g/dL)</span>
-              <input type="text" value={labs.hemoglobin} onChange={(e) => setLabs({ ...labs, hemoglobin: e.target.value })} className="border rounded-md p-2 w-full focus:ring-indigo-500" />
-            </label>
-            <label className="block">
-              <span className="text-slate-700 text-sm">Urinalysis Protein (Negative/Trace)</span>
-              <input type="text" value={labs.urinalysisProtein} onChange={(e) => setLabs({ ...labs, urinalysisProtein: e.target.value })} className="border rounded-md p-2 w-full focus:ring-indigo-500" />
-            </label>
-            <label className="block">
-              <span className="text-slate-700 text-sm">Urinalysis Blood (Negative)</span>
-              <input type="text" value={labs.urinalysisBlood} onChange={(e) => setLabs({ ...labs, urinalysisBlood: e.target.value })} className="border rounded-md p-2 w-full focus:ring-indigo-500" />
-            </label>
-            <label className="block">
-              <span className="text-slate-700 text-sm">ACR (&lt;30 mg/g)</span>
-              <input type="text" value={labs.acr} onChange={(e) => setLabs({ ...labs, acr: e.target.value })} className="border rounded-md p-2 w-full focus:ring-indigo-500" />
-            </label>
-            <label className="block">
-              <span className="text-slate-700 text-sm">Spot Protein/Creatinine (&lt;150 mg/g)</span>
-              <input type="text" value={labs.spotProteinCreatinine} onChange={(e) => setLabs({ ...labs, spotProteinCreatinine: e.target.value })} className="border rounded-md p-2 w-full focus:ring-indigo-500" />
-            </label>
-            <label className="block">
-              <span className="text-slate-700 text-sm">24h Urine Protein (&lt;150 mg/day)</span>
-              <input type="text" value={labs.urineProtein24h} onChange={(e) => setLabs({ ...labs, urineProtein24h: e.target.value })} className="border rounded-md p-2 w-full focus:ring-indigo-500" />
-            </label>
-          </div>
-        </Card>
+        <Accordion title="🩹 Symptoms">
+          {/* your symptoms inputs here */}
+        </Accordion>
 
-        {/* Imaging */}
-        <Card className="mb-4">
-          <h2 className="text-lg font-semibold text-indigo-600 mb-3">🖼️ Imaging</h2>
-          <textarea
-            placeholder="Ultrasound Findings"
-            value={imaging.ultrasoundFindings}
-            onChange={(e) => setImaging({ ...imaging, ultrasoundFindings: e.target.value })}
-            className="border rounded-md p-2 w-full focus:ring-indigo-500"
-            rows={3}
-          />
-        </Card>
+        <Accordion title="🩺 Physical Exam">
+          {/* your physical exam inputs here */}
+        </Accordion>
 
-        {/* Action Buttons */}
-        <div className="flex flex-wrap gap-3 justify-center mb-6">
-          <Button onClick={askAkI} className="bg-indigo-600 text-white px-4 py-2 rounded-md shadow hover:bg-indigo-700 transition">Ask Aktiar</Button>
-          <Button onClick={generatePatientSummary} className="bg-green-600 text-white px-4 py-2 rounded-md shadow hover:bg-green-700 transition">Show Patient Data Summary</Button>
+        <Accordion title="🧪 Lab Results">
+          {/* your lab inputs here */}
+        </Accordion>
+
+        <Accordion title="🖼️ Imaging">
+          {/* your imaging inputs here */}
+        </Accordion>
+
+        <div className="flex flex-wrap gap-3 justify-center my-6">
+          <Button onClick={askAkI}>Ask Aktiar</Button>
+          <Button onClick={generatePatientSummary}>Show Patient Data Summary</Button>
         </div>
 
-        {/* Results */}
         {diagnosis && (
-          <Card className="mb-4 bg-indigo-50 border-indigo-200">
-            <h3 className="text-indigo-700 font-semibold mb-2">Diagnosis</h3>
-            <p className="mb-2">{diagnosis}</p>
-            {suggestions.length > 0 && (
-              <>
-                <h4 className="font-semibold mb-1">Recommendations:</h4>
-                <ul className="list-disc pl-5 mb-2 text-slate-700">
-                  {suggestions.map((s, i) => <li key={i}>{s}</li>)}
-                </ul>
-              </>
-            )}
-            {medications.length > 0 && (
-              <>
-                <h4 className="font-semibold mb-1">Medications:</h4>
-                <ul className="list-disc pl-5 mb-2 text-slate-700">
-                  {medications.map((m, i) => <li key={i}>{m}</li>)}
-                </ul>
-              </>
-            )}
-            {warnings.length > 0 && (
-              <>
-                <h4 className="font-semibold text-red-600 mb-1">Warnings:</h4>
-                <ul className="list-disc pl-5 text-red-600">
-                  {warnings.map((w, i) => <li key={i}>{w}</li>)}
-                </ul>
-              </>
-            )}
-          </Card>
+          <Accordion title="🩺 Diagnosis Result">
+            <p>{diagnosis}</p>
+            {suggestions.length > 0 && <ul>{suggestions.map((s, i) => <li key={i}>{s}</li>)}</ul>}
+            {medications.length > 0 && <ul>{medications.map((m, i) => <li key={i}>{m}</li>)}</ul>}
+            {warnings.length > 0 && <ul className="text-red-600">{warnings.map((w, i) => <li key={i}>{w}</li>)}</ul>}
+          </Accordion>
         )}
 
-        {/* Patient Summary */}
         {patientSummary && (
-          <Card className="mb-4 bg-green-50 border-green-200">
-            <h3 className="text-green-700 font-semibold mb-2">📋 Patient Data Summary (for ChatGPT)</h3>
+          <Accordion title="📋 Patient Data Summary (for ChatGPT)">
             <textarea
               value={patientSummary}
               readOnly
               rows={10}
-              className="border rounded-md p-2 w-full mb-3 focus:ring-green-500"
+              className="border rounded-md p-2 w-full mb-3"
             />
             <div className="flex gap-3">
-              <Button onClick={copySummary} className="bg-green-600 text-white px-4 py-2 rounded-md shadow hover:bg-green-700 transition">Copy to Clipboard</Button>
-              <Button onClick={openChatGPTWithSummary} className="bg-blue-600 text-white px-4 py-2 rounded-md shadow hover:bg-blue-700 transition">Search Online</Button>
+              <Button onClick={copySummary}>Copy to Clipboard</Button>
+              <Button onClick={openChatGPTWithSummary}>Search Online</Button>
             </div>
-          </Card>
+          </Accordion>
         )}
       </div>
     </div>
