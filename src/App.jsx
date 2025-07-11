@@ -243,9 +243,13 @@ Determine the medical condition, diagnose, prescribe medicine and suggest furthe
   return (
     <div className="min-h-screen bg-gradient-to-b from-slate-50 to-slate-100 p-4">
       <div className="max-w-3xl mx-auto bg-white rounded-xl shadow-lg p-6">
-        <h1 className="text-3xl font-bold text-indigo-700 mb-6 text-center">
-          NephroGuide - Diagnosis Interface
-        </h1>
+       <h1 className="text-3xl font-bold text-indigo-700 mb-2 text-center">
+  NephroCare Pro
+</h1>
+<p className="text-center text-green-600 mb-6 italic">
+  A Doctor’s Friend
+</p>
+
 <Accordion title="👤 Patient Profile">
   <div className="grid gap-3 md:grid-cols-2">
     <input
