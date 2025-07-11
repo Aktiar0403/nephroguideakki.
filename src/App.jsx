@@ -63,7 +63,7 @@ export default function App() {
   const [warnings, setWarnings] = useState([]);
   const [patientSummary, setPatientSummary] = useState("");
   const [takingMedicines, setTakingMedicines] = useState(false);
-const [medicinesList, setMedicinesList] = useState([
+  const [medicinesList, setMedicinesList] = useState([
   { name: "", duration: "" }
 ]);
 
