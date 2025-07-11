@@ -219,10 +219,43 @@ Determine the medical condition, diagnose, prescribe medicine and suggest furthe
         <h1 className="text-3xl font-bold text-indigo-700 mb-6 text-center">
           NephroGuide - Diagnosis Interface
         </h1>
-
-        <Accordion title="👤 Patient Profile">
-          {/* your profile inputs here */}
-        </Accordion>
+<Accordion title="👤 Patient Profile">
+  <div className="grid gap-3 md:grid-cols-2">
+    <input
+      type="text"
+      placeholder="Name"
+      value={patientProfile.name}
+      onChange={(e) => setPatientProfile({ ...patientProfile, name: e.target.value })}
+      className="border rounded-md p-2 w-full focus:ring-indigo-500"
+    />
+    <input
+      type="number"
+      placeholder="Age"
+      value={patientProfile.age}
+      onChange={(e) => setPatientProfile({ ...patientProfile, age: e.target.value })}
+      className="border rounded-md p-2 w-full focus:ring-indigo-500"
+    />
+    <select
+      value={patientProfile.gender}
+      onChange={(e) => setPatientProfile({ ...patientProfile, gender: e.target.value })}
+      className="border rounded-md p-2 w-full focus:ring-indigo-500"
+    >
+      <option value="">Gender</option>
+      <option>Male</option>
+      <option>Female</option>
+      <option>Other</option>
+    </select>
+    <select
+      value={patientProfile.location}
+      onChange={(e) => setPatientProfile({ ...patientProfile, location: e.target.value })}
+      className="border rounded-md p-2 w-full focus:ring-indigo-500"
+    >
+      <option value="">Location</option>
+      <option>Rural</option>
+      <option>Urban</option>
+    </select>
+  </div>
+</Accordion>
 
         <Accordion title="🩺 Medical History">
           {/* your medical history inputs here */}
