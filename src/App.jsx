@@ -10,7 +10,66 @@ export default function App() {
     gender: "",
     location: ""
   });
-
+   const medicineOptions = [
+  {
+    label: "🩺 Hypertension Medicines",
+    options: [
+      { value: "Enalapril", label: "Enalapril (ACEi)" },
+      { value: "Ramipril", label: "Ramipril (ACEi)" },
+      { value: "Lisinopril", label: "Lisinopril (ACEi)" },
+      { value: "Losartan", label: "Losartan (ARB)" },
+      { value: "Valsartan", label: "Valsartan (ARB)" },
+      { value: "Amlodipine", label: "Amlodipine (CCB)" },
+      { value: "Nifedipine", label: "Nifedipine (CCB)" },
+      { value: "Hydrochlorothiazide", label: "Hydrochlorothiazide (Thiazide)" },
+      { value: "Chlorthalidone", label: "Chlorthalidone (Thiazide)" },
+      { value: "Furosemide", label: "Furosemide (Loop Diuretic)" },
+      { value: "Spironolactone", label: "Spironolactone (Aldosterone Antagonist)" }
+    ],
+  },
+  {
+    label: "🩹 Diabetes Medicines",
+    options: [
+      { value: "Metformin", label: "Metformin" },
+      { value: "Glimepiride", label: "Glimepiride" },
+      { value: "Insulin", label: "Insulin" },
+      { value: "SGLT2 Inhibitor", label: "SGLT2 Inhibitor (e.g. Empagliflozin)" },
+      { value: "DPP4 Inhibitor", label: "DPP4 Inhibitor (e.g. Sitagliptin)" },
+      { value: "GLP1 Agonist", label: "GLP1 Agonist (e.g. Liraglutide)" }
+    ],
+  },
+  {
+    label: "💊 Painkillers (NSAIDs etc.)",
+    options: [
+      { value: "Ibuprofen", label: "Ibuprofen (Avoid in CKD)" },
+      { value: "Diclofenac", label: "Diclofenac (Avoid in CKD)" },
+      { value: "Indomethacin", label: "Indomethacin (Avoid in CKD)" },
+      { value: "Paracetamol", label: "Paracetamol (Safe)" },
+      { value: "Tramadol", label: "Tramadol (Use with caution)" }
+    ],
+  },
+  {
+    label: "⚠️ Kidney-impacting Medicines",
+    options: [
+      { value: "PPI", label: "PPI (Omeprazole, Pantoprazole)" },
+      { value: "NSAIDs", label: "NSAIDs (e.g. Ibuprofen, Diclofenac)" },
+      { value: "Aminoglycosides", label: "Aminoglycosides (Gentamicin, Amikacin)" },
+      { value: "Vancomycin", label: "Vancomycin" },
+      { value: "Tenofovir", label: "Tenofovir" },
+      { value: "Cisplatin", label: "Cisplatin (Nephrotoxic Chemo)" },
+      { value: "Contrast Dye", label: "Contrast Dye (IV Contrast)" }
+    ],
+  },
+  {
+    label: "Other / Supportive",
+    options: [
+      { value: "Potassium Binder", label: "Potassium Binder" },
+      { value: "Calcium Channel Blocker", label: "Calcium Channel Blocker" },
+      { value: "Statin", label: "Statin" },
+      { value: "Phosphate Binder", label: "Phosphate Binder" },
+      { value: "Other", label: "Other" }
+    ],
+  },
   const [medicalHistory, setMedicalHistory] = useState({
     diabetes: false,
     hypertension: false,
@@ -85,66 +144,7 @@ export default function App() {
     const potassium = parseFloat(labs.potassium);
     const hemoglobin = parseFloat(labs.hemoglobin);
     const acr = parseFloat(labs.acr);
-    const medicineOptions = [
-  {
-    label: "🩺 Hypertension Medicines",
-    options: [
-      { value: "Enalapril", label: "Enalapril (ACEi)" },
-      { value: "Ramipril", label: "Ramipril (ACEi)" },
-      { value: "Lisinopril", label: "Lisinopril (ACEi)" },
-      { value: "Losartan", label: "Losartan (ARB)" },
-      { value: "Valsartan", label: "Valsartan (ARB)" },
-      { value: "Amlodipine", label: "Amlodipine (CCB)" },
-      { value: "Nifedipine", label: "Nifedipine (CCB)" },
-      { value: "Hydrochlorothiazide", label: "Hydrochlorothiazide (Thiazide)" },
-      { value: "Chlorthalidone", label: "Chlorthalidone (Thiazide)" },
-      { value: "Furosemide", label: "Furosemide (Loop Diuretic)" },
-      { value: "Spironolactone", label: "Spironolactone (Aldosterone Antagonist)" }
-    ],
-  },
-  {
-    label: "🩹 Diabetes Medicines",
-    options: [
-      { value: "Metformin", label: "Metformin" },
-      { value: "Glimepiride", label: "Glimepiride" },
-      { value: "Insulin", label: "Insulin" },
-      { value: "SGLT2 Inhibitor", label: "SGLT2 Inhibitor (e.g. Empagliflozin)" },
-      { value: "DPP4 Inhibitor", label: "DPP4 Inhibitor (e.g. Sitagliptin)" },
-      { value: "GLP1 Agonist", label: "GLP1 Agonist (e.g. Liraglutide)" }
-    ],
-  },
-  {
-    label: "💊 Painkillers (NSAIDs etc.)",
-    options: [
-      { value: "Ibuprofen", label: "Ibuprofen (Avoid in CKD)" },
-      { value: "Diclofenac", label: "Diclofenac (Avoid in CKD)" },
-      { value: "Indomethacin", label: "Indomethacin (Avoid in CKD)" },
-      { value: "Paracetamol", label: "Paracetamol (Safe)" },
-      { value: "Tramadol", label: "Tramadol (Use with caution)" }
-    ],
-  },
-  {
-    label: "⚠️ Kidney-impacting Medicines",
-    options: [
-      { value: "PPI", label: "PPI (Omeprazole, Pantoprazole)" },
-      { value: "NSAIDs", label: "NSAIDs (e.g. Ibuprofen, Diclofenac)" },
-      { value: "Aminoglycosides", label: "Aminoglycosides (Gentamicin, Amikacin)" },
-      { value: "Vancomycin", label: "Vancomycin" },
-      { value: "Tenofovir", label: "Tenofovir" },
-      { value: "Cisplatin", label: "Cisplatin (Nephrotoxic Chemo)" },
-      { value: "Contrast Dye", label: "Contrast Dye (IV Contrast)" }
-    ],
-  },
-  {
-    label: "Other / Supportive",
-    options: [
-      { value: "Potassium Binder", label: "Potassium Binder" },
-      { value: "Calcium Channel Blocker", label: "Calcium Channel Blocker" },
-      { value: "Statin", label: "Statin" },
-      { value: "Phosphate Binder", label: "Phosphate Binder" },
-      { value: "Other", label: "Other" }
-    ],
-  },
+ 
 ];
 
         if (!isNaN(eGFR)) {
