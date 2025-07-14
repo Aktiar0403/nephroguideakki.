@@ -60,7 +60,9 @@ export default function App() {
   });
 
   const [takingMedicines, setTakingMedicines] = useState(false);
-  const [medicinesList, setMedicinesList] = useState([{ name: "", duration: "" }]);
+  const [medicinesList, setMedicinesList] = useState([
+    { name: "", duration: "" }
+  ]);
 
   const [diagnosis, setDiagnosis] = useState("");
   const [suggestions, setSuggestions] = useState([]);
@@ -83,9 +85,9 @@ export default function App() {
         { value: "Chlorthalidone", label: "Chlorthalidone (Thiazide)" },
         { value: "Furosemide", label: "Furosemide (Loop Diuretic)" },
         { value: "Spironolactone", label: "Spironolactone (Aldosterone Antagonist)" }
-      ]
+      ],
     },
-    {
+{
       label: "🩹 Diabetes Medicines",
       options: [
         { value: "Metformin", label: "Metformin" },
@@ -94,7 +96,7 @@ export default function App() {
         { value: "SGLT2 Inhibitor", label: "SGLT2 Inhibitor (e.g. Empagliflozin)" },
         { value: "DPP4 Inhibitor", label: "DPP4 Inhibitor (e.g. Sitagliptin)" },
         { value: "GLP1 Agonist", label: "GLP1 Agonist (e.g. Liraglutide)" }
-      ]
+      ],
     },
     {
       label: "💊 Painkillers (NSAIDs etc.)",
@@ -104,7 +106,7 @@ export default function App() {
         { value: "Indomethacin", label: "Indomethacin (⚠️ Avoid in CKD)" },
         { value: "Paracetamol", label: "Paracetamol (Safe)" },
         { value: "Tramadol", label: "Tramadol (Use with caution)" }
-      ]
+      ],
     },
     {
       label: "⚠️ Kidney-impacting Medicines",
@@ -116,7 +118,7 @@ export default function App() {
         { value: "Tenofovir", label: "Tenofovir" },
         { value: "Cisplatin", label: "Cisplatin (Nephrotoxic Chemo)" },
         { value: "Contrast Dye", label: "Contrast Dye (IV Contrast)" }
-      ]
+      ],
     },
     {
       label: "Other / Supportive",
@@ -126,10 +128,12 @@ export default function App() {
         { value: "Statin", label: "Statin" },
         { value: "Phosphate Binder", label: "Phosphate Binder" },
         { value: "Other", label: "Other" }
-      ]
-    }
+      ],
+    },
   ];
 
+// ---------------------------
+  // Diagnostic Logic
   function askAkI() {
     let result = "";
     let suggest = [];
@@ -191,9 +195,10 @@ export default function App() {
       );
       meds.push("ACEi/ARB if potassium normal");
     }
-
-    if (potassium > 5.5) {
-      warns.push("Hyperkalemia detected: recommend dietary K+ restriction and review medications");
+if (potassium > 5.5) {
+      warns.push(
+        "Hyperkalemia detected: recommend dietary K+ restriction and review medications"
+      );
       meds.push("Consider potassium binders if persistent");
     }
 
@@ -206,285 +211,109 @@ export default function App() {
 
     meds.push("Avoid NSAIDs");
 
+    if (imaging.ultrasoundFindings) {
+      switch (imaging.ultrasoundFindings) {
+        case "Increased echogenicity":
+        case "Small shrunken kidneys":
+          result = result || "Chronic Kidney Disease (Ultrasound suggestive)";
+          suggest.push("Chronic structural changes noted on ultrasound");
+          break;
+        case "Hydronephrosis":
+          result = result || "Possible Obstructive Uropathy";
+          suggest.push("Consider further imaging (CT/IVP)", "Assess for urinary obstruction");
+          break;
+        case "Asymmetry (one small)":
+          suggest.push("Possible reflux nephropathy or chronic vascular disease");
+          break;
+        case "Cystic disease":
+          result = result || "Possible Polycystic Kidney Disease";
+          suggest.push("Consider family history, genetic counseling");
+          break;
+        case "Obstructive calculi":
+          result = result || "Possible Obstructive Nephropathy (Stones)";
+          suggest.push("Assess for hydronephrosis", "Consider urological referral");
+          break;
+        default:
+          break;
+      }
+    }
+
     setDiagnosis(result);
     setSuggestions(suggest);
     setMedications(meds);
     setWarnings(warns);
   }
 
+  // ---------------------------
+  // Patient Summary
   function generatePatientSummary() {
     const historyItems = Object.entries(medicalHistory)
       .filter(([k, v]) => v === true || (typeof v === "string" && v.trim() !== ""))
-      .map(([k, v]) => typeof v === "boolean" ? k : `${k}: ${v}`)
+      .map(([k, v]) =>
+        typeof v === "boolean" ? `${k.replace(/([A-Z])/g, " $1")}` : `${k.replace(/([A-Z])/g, " $1")}: ${v}`
+      )
       .join("\n");
 
     const symptomItems = Object.entries(symptoms)
       .filter(([k, v]) => v === true)
-      .map(([k]) => k)
+      .map(([k]) => k.replace(/([A-Z])/g, " $1"))
       .join("\n");
 
     const labItems = Object.entries(labs)
-      .filter(([k, v]) => v.trim() !== "")
-      .map(([k, v]) => `${k}: ${v}`)
+      .filter(([_, v]) => v.trim() !== "")
+      .map(([k, v]) => `${k.replace(/([A-Z])/g, " $1")}: ${v}`)
       .join("\n");
 
     const medicinesItems = takingMedicines
-      ? medicinesList.filter(m => m.name || m.duration).map(m => `- ${m.name} (${m.duration})`).join("\n")
+      ? medicinesList
+          .filter(m => m.name || m.duration)
+          .map(m => `- ${m.name} (${m.duration})`)
+          .join("\n")
       : "No current medicines";
 
-    setPatientSummary(`Medical History:\n${historyItems}\n\nSymptoms:\n${symptomItems}\n\nLabs:\n${labItems}\n\nMedicines:\n${medicinesItems}`);
+    let summary = `👤 Patient Profile
+Name: ${patientProfile.name}
+Age: ${patientProfile.age}
+Gender: ${patientProfile.gender}
+Location: ${patientProfile.location}
+
+🩺 Medical History
+${historyItems || "No significant history"}
+
+💊 Current Medicines
+${medicinesItems}
+
+🩹 Symptoms
+${symptomItems || "No reported symptoms"}
+
+🧪 Lab Results
+${labItems || "No lab results entered"}
+
+🖼️ Imaging
+Ultrasound Findings: ${imaging.ultrasoundFindings || "Not provided"}
+Additional Notes: ${imaging.notes || "None"}
+
+🧭
+Determine the medical condition, diagnose, prescribe medicine and suggest further tests if required.
+`;
+
+    setPatientSummary(summary);
   }
 
   function copySummary() {
     navigator.clipboard.writeText(patientSummary);
-    alert("Patient data copied!");
+    alert("Patient data copied to clipboard!");
   }
 
   function openChatGPTWithSummary() {
     if (!patientSummary) {
-      alert("Please generate the summary first!");
+      alert("Please generate the patient summary first!");
       return;
     }
     const encoded = encodeURIComponent(patientSummary);
-    window.open(`https://chat.openai.com/?prompt=${encoded}`, "_blank");
+    const chatURL = `https://chat.openai.com/?prompt=${encoded}`;
+    window.open(chatURL, "_blank");
   }
-
-  return (
-    <div className="p-4">
-      <h1 className="text-2xl font-bold mb-4">NephroCare Pro</h1>
-
-      <Accordion title="Patient Profile">
-        {/* your inputs */}
-      </Accordion>
-
-      <Accordion title="Medical History">
-        <label className="flex items-center space-x-2">
-          <input
-            type="checkbox"
-            checked={takingMedicines}
-            onChange={e => setTakingMedicines(e.target.checked)}
-          />
-          <span>Currently Taking Medicines</span>
-        </label>
-
-        {takingMedicines && medicinesList.map((med, idx) => (
-          <div key={idx} className="flex gap-2 mt-2">
-            <Select
-              options={medicineOptions}
-              isSearchable
-              value={med.name ? { value: med.name, label: med.name } : null}
-              onChange={selected => {
-                const updated = [...medicinesList];
-                updated[idx].name = selected ? selected.value : "";
-                setMedicinesList(updated);
-              }}
-              className="w-1/2"
-            />
-            <input
-              type="text"
-              placeholder="Duration"
-              value={med.duration}
-              onChange={e => {
-                const updated = [...medicinesList];
-                updated[idx].duration = e.target.value;
-                setMedicinesList(updated);
-              }}
-              className="border rounded p-2 w-1/2"
-            />
-          </div>
-        ))}
-      <Accordion title="🩹 Symptoms">
-  <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
-    {Object.keys(symptoms).map((item) => (
-      <label key={item} className="flex items-center space-x-2">
-        <input
-          type="checkbox"
-          checked={symptoms[item]}
-          onChange={(e) =>
-            setSymptoms({ ...symptoms, [item]: e.target.checked })
-          }
-          className="accent-indigo-600"
-        />
-        <span className="text-slate-700">
-          {item.replace(/([A-Z])/g, " $1").toUpperCase()}
-        </span>
-      </label>
-    ))}
-  </div>
-<Accordion title="🩺 Physical Exam">
-  <div className="grid gap-3 md:grid-cols-2">
-    <input
-      type="number"
-      placeholder="SBP (mmHg)"
-      value={physicalExam.sbp}
-      onChange={(e) => setPhysicalExam({ ...physicalExam, sbp: e.target.value })}
-      className="border rounded-md p-2 w-full focus:ring-indigo-500"
-    />
-    <input
-      type="number"
-      placeholder="DBP (mmHg)"
-      value={physicalExam.dbp}
-      onChange={(e) => setPhysicalExam({ ...physicalExam, dbp: e.target.value })}
-      className="border rounded-md p-2 w-full focus:ring-indigo-500"
-    />
-    <input
-      type="number"
-      placeholder="Weight (kg)"
-      value={physicalExam.weight}
-      onChange={(e) => setPhysicalExam({ ...physicalExam, weight: e.target.value })}
-      className="border rounded-md p-2 w-full focus:ring-indigo-500"
-    />
-    <select
-      value={physicalExam.volumeStatus}
-      onChange={(e) =>
-        setPhysicalExam({ ...physicalExam, volumeStatus: e.target.value })
-      }
-      className="border rounded-md p-2 w-full focus:ring-indigo-500"
-    >
-      <option value="">Volume Status</option>
-      <option value="Hypovolemic">Hypovolemic</option>
-      <option value="Euvolemic">Euvolemic</option>
-      <option value="Hypervolemic">Hypervolemic</option>
-    </select>
-  </div>
-<Accordion title="🧪 Lab Results">
-  <div className="grid gap-3 md:grid-cols-2">
-    <label className="block">
-      <span className="text-slate-700 text-sm">Creatinine (0.6–1.2 mg/dL)</span>
-      <input
-        type="text"
-        value={labs.creatinine}
-        onChange={(e) => setLabs({ ...labs, creatinine: e.target.value })}
-        className="border rounded-md p-2 w-full focus:ring-indigo-500"
-      />
-    </label>
-
-    <label className="block">
-      <span className="text-slate-700 text-sm">eGFR (&gt;90 mL/min)</span>
-      <input
-        type="text"
-        value={labs.egfr}
-        onChange={(e) => setLabs({ ...labs, egfr: e.target.value })}
-        className="border rounded-md p-2 w-full focus:ring-indigo-500"
-      />
-    </label>
-
-    <label className="block">
-      <span className="text-slate-700 text-sm">Potassium (3.5–5.0 mEq/L)</span>
-      <input
-        type="text"
-        value={labs.potassium}
-        onChange={(e) => setLabs({ ...labs, potassium: e.target.value })}
-        className="border rounded-md p-2 w-full focus:ring-indigo-500"
-      />
-    </label>
-
-    <label className="block">
-      <span className="text-slate-700 text-sm">Hemoglobin (M:13–17 / F:12–15 g/dL)</span>
-      <input
-        type="text"
-        value={labs.hemoglobin}
-        onChange={(e) => setLabs({ ...labs, hemoglobin: e.target.value })}
-        className="border rounded-md p-2 w-full focus:ring-indigo-500"
-      />
-    </label>
-
-    <label className="block">
-      <span className="text-slate-700 text-sm">Urinalysis Protein (Negative/Trace)</span>
-      <input
-        type="text"
-        value={labs.urinalysisProtein}
-        onChange={(e) => setLabs({ ...labs, urinalysisProtein: e.target.value })}
-        className="border rounded-md p-2 w-full focus:ring-indigo-500"
-      />
-    </label>
-
-    <label className="block">
-      <span className="text-slate-700 text-sm">Urinalysis Blood (Negative)</span>
-      <input
-        type="text"
-        value={labs.urinalysisBlood}
-        onChange={(e) => setLabs({ ...labs, urinalysisBlood: e.target.value })}
-        className="border rounded-md p-2 w-full focus:ring-indigo-500"
-      />
-    </label>
-
-    <label className="block">
-      <span className="text-slate-700 text-sm">ACR (&lt;30 mg/g)</span>
-      <input
-        type="text"
-        value={labs.acr}
-        onChange={(e) => setLabs({ ...labs, acr: e.target.value })}
-        className="border rounded-md p-2 w-full focus:ring-indigo-500"
-      />
-    </label>
-
-    <label className="block">
-      <span className="text-slate-700 text-sm">Spot Protein/Creatinine (&lt;150 mg/g)</span>
-      <input
-        type="text"
-        value={labs.spotProteinCreatinine}
-        onChange={(e) => setLabs({ ...labs, spotProteinCreatinine: e.target.value })}
-        className="border rounded-md p-2 w-full focus:ring-indigo-500"
-      />
-    </label>
-
-    <label className="block">
-      <span className="text-slate-700 text-sm">24h Urine Protein (&lt;150 mg/day)</span>
-      <input
-        type="text"
-        value={labs.urineProtein24h}
-        onChange={(e) => setLabs({ ...labs, urineProtein24h: e.target.value })}
-        className="border rounded-md p-2 w-full focus:ring-indigo-500"
-      />
-    </label>
-  </div>
-<Accordion title="🖼️ Imaging - Kidney Ultrasound">
-  <div className="space-y-3">
-    <label className="block">
-      <span className="text-slate-700 text-sm">Ultrasound Findings</span>
-      <select
-        value={imaging.ultrasoundFindings}
-        onChange={(e) => setImaging({ ...imaging, ultrasoundFindings: e.target.value })}
-        className="border rounded-md p-2 w-full focus:ring-indigo-500"
-      >
-        <option value="">Select Finding</option>
-        <option>Normal kidneys</option>
-        <option>Increased echogenicity</option>
-        <option>Small shrunken kidneys</option>
-        <option>Asymmetry (one small)</option>
-        <option>Hydronephrosis</option>
-        <option>Cystic disease</option>
-        <option>Obstructive calculi</option>
-        <option>Other (describe below)</option>
-      </select>
-    </label>
-    <textarea
-      placeholder="Additional ultrasound notes (optional)"
-      value={imaging.notes || ""}
-      onChange={(e) => setImaging({ ...imaging, notes: e.target.value })}
-      className="border rounded-md p-2 w-full focus:ring-indigo-500"
-      rows={3}
-    />
-  </div>
-
-      {/* Add other Accordions here: Symptoms, Physical Exam, Lab Results, Imaging */}
-
-      <Button onClick={askAkI}>Ask Aktiar</Button>
-      <Button onClick={generatePatientSummary}>Generate Summary</Button>
-
-      {diagnosis && <p className="mt-4">{diagnosis}</p>}
-      {patientSummary && (
-        <div className="mt-4">
-          <textarea
-            value={patientSummary}
-            readOnly
-            className="w-full h-40 border"
-          />
-          <Button onClick={copySummary}>Copy Summary</Button>
-          <Button onClick={openChatGPTWithSummary}>Open in ChatGPT</Button>
-        </div>
-      )}
-    </div>
-  );
 }
+
+export default App;
