@@ -69,7 +69,6 @@ export default function App() {
   const [warnings, setWarnings] = useState([]);
   const [patientSummary, setPatientSummary] = useState("");
 
-  // --------------------------------------
   // Diagnostic Logic
   function askAkI() {
     let result = "";
@@ -82,8 +81,7 @@ export default function App() {
     const potassium = parseFloat(labs.potassium);
     const hemoglobin = parseFloat(labs.hemoglobin);
     const acr = parseFloat(labs.acr);
-
-    if (!isNaN(eGFR)) {
+        if (!isNaN(eGFR)) {
       if (eGFR >= 90) result = "Normal Kidney Function";
       else if (eGFR >= 60) result = "Mildly Reduced Function (Stage 2)";
       else if (eGFR >= 45) result = "CKD Stage 3a";
@@ -148,8 +146,6 @@ export default function App() {
     }
 
     meds.push("Avoid NSAIDs");
-
-    // Ultrasound interpretation
     if (imaging.ultrasoundFindings) {
       switch (imaging.ultrasoundFindings) {
         case "Increased echogenicity":
@@ -183,7 +179,7 @@ export default function App() {
     setWarnings(warns);
   }
 
-  // --------------------------------------
+  // ---------------------------
   // Patient Summary
   function generatePatientSummary() {
     const historyItems = Object.entries(medicalHistory)
@@ -197,7 +193,6 @@ export default function App() {
       .filter(([k, v]) => v === true)
       .map(([k]) => k.replace(/([A-Z])/g, " $1"))
       .join("\n");
-
     const labItems = Object.entries(labs)
       .filter(([_, v]) => v.trim() !== "")
       .map(([k, v]) => `${k.replace(/([A-Z])/g, " $1")}: ${v}`)
@@ -206,7 +201,7 @@ export default function App() {
     const medicinesItems = takingMedicines
       ? medicinesList
           .filter(m => m.name || m.duration)
-          .map((m, i) => `- ${m.name} (${m.duration})`)
+          .map(m => `- ${m.name} (${m.duration})`)
           .join("\n")
       : "No current medicines";
 
@@ -254,7 +249,6 @@ Determine the medical condition, diagnose, prescribe medicine and suggest furthe
     window.open(chatURL, "_blank");
   }
 
-  // --------------------------------------
   return (
     <div className="min-h-screen bg-gradient-to-b from-slate-50 to-slate-100 p-4">
       <div className="max-w-3xl mx-auto bg-white rounded-xl shadow-lg p-6">
@@ -275,9 +269,59 @@ Determine the medical condition, diagnose, prescribe medicine and suggest furthe
           </p>
         </div>
 
-        {/* All Accordions here */}
-        {/* ... your existing Accordions exactly as you pasted them ... */}
+        {/* ADD ALL YOUR ACCORDIONS HERE */}
+        <Accordion title="👤 Patient Profile">
+          {/* ... Your Patient Profile form inputs here ... */}
+        </Accordion>
 
+        <Accordion title="🩺 Medical History">
+          {/* ... Medical History with takingMedicines toggle and medicineList here ... */}
+        </Accordion>
+
+        <Accordion title="🩹 Symptoms">
+          {/* ... Symptoms checkboxes here ... */}
+        </Accordion>
+
+        <Accordion title="🩺 Physical Exam">
+          {/* ... Physical exam fields here ... */}
+        </Accordion>
+
+        <Accordion title="🧪 Lab Results">
+          {/* ... Lab inputs here ... */}
+        </Accordion>
+
+        <Accordion title="🖼️ Imaging - Kidney Ultrasound">
+          {/* ... Imaging findings dropdown and notes here ... */}
+        </Accordion>
+
+        <div className="flex flex-wrap gap-3 justify-center my-6">
+          <Button onClick={askAkI}>Ask Aktiar</Button>
+          <Button onClick={generatePatientSummary}>Show Patient Data Summary</Button>
+        </div>
+
+        {diagnosis && (
+          <Accordion title="🩺 Diagnosis Result">
+            <p>{diagnosis}</p>
+            {suggestions.length > 0 && <ul>{suggestions.map((s, i) => <li key={i}>{s}</li>)}</ul>}
+            {medications.length > 0 && <ul>{medications.map((m, i) => <li key={i}>{m}</li>)}</ul>}
+            {warnings.length > 0 && <ul className="text-red-600">{warnings.map((w, i) => <li key={i}>{w}</li>)}</ul>}
+          </Accordion>
+        )}
+
+        {patientSummary && (
+          <Accordion title="📋 Patient Data Summary (for ChatGPT)">
+            <textarea
+              value={patientSummary}
+              readOnly
+              rows={10}
+              className="border rounded-md p-2 w-full mb-3"
+            />
+            <div className="flex gap-3">
+              <Button onClick={copySummary}>Copy to Clipboard</Button>
+              <Button onClick={openChatGPTWithSummary}>Search Online</Button>
+            </div>
+          </Accordion>
+        )}
       </div>
     </div>
   );
