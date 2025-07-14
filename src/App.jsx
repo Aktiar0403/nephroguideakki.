@@ -1,3 +1,4 @@
+import Select from 'react-select';
 import React, { useState } from "react";
 import Accordion from "./components/Accordion";
 import Button from "./components/Button";
@@ -68,6 +69,56 @@ export default function App() {
   const [medications, setMedications] = useState([]);
   const [warnings, setWarnings] = useState([]);
   const [patientSummary, setPatientSummary] = useState("");
+const medicineOptions = [
+  {
+    label: "🩺 Hypertension Medicines",
+    options: [
+      { value: "Enalapril", label: "Enalapril (ACEi)" },
+      { value: "Ramipril", label: "Ramipril (ACEi)" },
+      { value: "Losartan", label: "Losartan (ARB)" },
+      { value: "Amlodipine", label: "Amlodipine (CCB)" },
+      { value: "Hydrochlorothiazide", label: "Hydrochlorothiazide (Thiazide)" },
+      { value: "Furosemide", label: "Furosemide (Loop Diuretic)" },
+      { value: "Spironolactone", label: "Spironolactone (Aldosterone Antagonist)" }
+    ],
+  },
+  {
+    label: "🩹 Diabetes Medicines",
+    options: [
+      { value: "Metformin", label: "Metformin" },
+      { value: "Glimepiride", label: "Glimepiride" },
+      { value: "Insulin", label: "Insulin" },
+      { value: "SGLT2 Inhibitor", label: "SGLT2 Inhibitor" }
+    ],
+  },
+  {
+    label: "💊 Painkillers (NSAIDs)",
+    options: [
+      { value: "Ibuprofen", label: "Ibuprofen (Avoid in CKD)" },
+      { value: "Diclofenac", label: "Diclofenac (Avoid in CKD)" },
+      { value: "Paracetamol", label: "Paracetamol" }
+    ],
+  },
+  {
+    label: "⚠️ Kidney-impacting Medicines",
+    options: [
+      { value: "PPI", label: "PPI (Omeprazole, Pantoprazole)" },
+      { value: "NSAIDs", label: "NSAIDs" },
+      { value: "Aminoglycosides", label: "Aminoglycosides (Gentamicin, Amikacin)" },
+      { value: "Vancomycin", label: "Vancomycin" },
+      { value: "Tenofovir", label: "Tenofovir" }
+    ],
+  },
+  {
+    label: "Other / Supportive",
+    options: [
+      { value: "Potassium Binder", label: "Potassium Binder" },
+      { value: "Calcium Channel Blocker", label: "Calcium Channel Blocker" },
+      { value: "Statin", label: "Statin" },
+      { value: "Other", label: "Other" }
+    ],
+  },
+];
 
   // Diagnostic Logic
   function askAkI() {
@@ -364,27 +415,20 @@ Determine the medical condition, diagnose, prescribe medicine and suggest furthe
             <div className="space-y-3 mt-2">
               {medicinesList.map((med, idx) => (
                 <div key={idx} className="grid md:grid-cols-2 gap-2">
-                  <select
-                    value={med.name}
-                    onChange={(e) => {
-                      const updated = [...medicinesList];
-                      updated[idx].name = e.target.value;
-                      setMedicinesList(updated);
-                    }}
-                    className="border rounded-md p-2 w-full focus:ring-indigo-500"
-                  >
-                    <option value="">Select Medicine</option>
-                    <option>Enalapril</option>
-                    <option>Ramipril</option>
-                    <option>Losartan</option>
-                    <option>Furosemide</option>
-                    <option>Spironolactone</option>
-                    <option>Hydrochlorothiazide</option>
-                    <option>Potassium Binder</option>
-                    <option>Calcium Channel Blocker</option>
-                    <option>SGLT2 Inhibitor</option>
-                    <option>Other</option>
-                  </select>
+             <Select
+  options={medicineOptions}
+  value={med.name ? { value: med.name, label: med.name } : null}
+  onChange={(selected) => {
+    const updated = [...medicinesList];
+    updated[idx].name = selected ? selected.value : "";
+    setMedicinesList(updated);
+  }}
+  isClearable
+  className="react-select-container"
+  classNamePrefix="react-select"
+  placeholder="Search & Select Medicine..."
+/>
+
                   <input
                     type="text"
                     placeholder="Duration (e.g. 6 months)"
