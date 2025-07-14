@@ -436,37 +436,43 @@ Determine the medical condition, diagnose, prescribe medicine and suggest furthe
 
           {takingMedicines && (
             <div className="space-y-3 mt-2">
-              {medicinesList.map((med, idx) => (
-                <div key={idx} className="grid md:grid-cols-2 gap-2">
-             <Select
-  options={medicineOptions}
-  value={med.name ? { value: med.name, label: med.name } : null}
-  onChange={(selected) => {
-    const updated = [...medicinesList];
-    updated[idx].name = selected ? selected.value : "";
-    setMedicinesList(updated);
-  }}
-  isClearable
-  isSearchable
-  className="react-select-container"
-  classNamePrefix="react-select"
-  placeholder="Search & Select Medicine..."
-/>
+             {medicinesList.map((med, idx) => (
+  <div key={idx} className="grid md:grid-cols-2 gap-2">
+    <Select
+      options={medicineOptions}
+      value={
+        med.name
+          ? medicineOptions
+              .flatMap(group => group.options)
+              .find(opt => opt.value === med.name) || null
+          : null
+      }
+      onChange={(selected) => {
+        const updated = [...medicinesList];
+        updated[idx].name = selected ? selected.value : "";
+        setMedicinesList(updated);
+      }}
+      isClearable
+      isSearchable
+      className="react-select-container"
+      classNamePrefix="react-select"
+      placeholder="Search & Select Medicine..."
+    />
 
+    <input
+      type="text"
+      placeholder="Duration (e.g. 6 months)"
+      value={med.duration}
+      onChange={(e) => {
+        const updated = [...medicinesList];
+        updated[idx].duration = e.target.value;
+        setMedicinesList(updated);
+      }}
+      className="border rounded-md p-2 w-full focus:ring-indigo-500"
+    />
+  </div>
+))}
 
-                  <input
-                    type="text"
-                    placeholder="Duration (e.g. 6 months)"
-                    value={med.duration}
-                    onChange={(e) => {
-                      const updated = [...medicinesList];
-                      updated[idx].duration = e.target.value;
-                      setMedicinesList(updated);
-                    }}
-                    className="border rounded-md p-2 w-full focus:ring-indigo-500"
-                  />
-                </div>
-              ))}
               <button
                 type="button"
                 onClick={() => setMedicinesList([...medicinesList, { name: "", duration: "" }])}
