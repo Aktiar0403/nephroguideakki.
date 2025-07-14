@@ -451,6 +451,6 @@ export default function App() {
           <Button onClick={openChatGPTWithSummary}>Open in ChatGPT</Button>
         </div>
       )}
-    </div>
+    
   );
 }
