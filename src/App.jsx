@@ -713,4 +713,4 @@ Determine the medical condition, diagnose, prescribe medicine and suggest furthe
       </div>
     </div>
   );
-}
+
