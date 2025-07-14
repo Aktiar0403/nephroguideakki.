@@ -153,7 +153,7 @@ export default function App() {
     const hemoglobin = parseFloat(labs.hemoglobin);
     const acr = parseFloat(labs.acr);
  
-];
+;
 
         if (!isNaN(eGFR)) {
       if (eGFR >= 90) result = "Normal Kidney Function";
