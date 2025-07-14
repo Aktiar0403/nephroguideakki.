@@ -4,7 +4,70 @@ import Accordion from "./components/Accordion";
 import Button from "./components/Button";
 
 export default function App() {
-  // Medicine Options - keep this OUTSIDE of useState
+  const [patientProfile, setPatientProfile] = useState({
+    name: "",
+    age: "",
+    gender: "",
+    location: ""
+  });
+
+  const [medicalHistory, setMedicalHistory] = useState({
+    diabetes: false,
+    hypertension: false,
+    diabetesDuration: "",
+    hypertensionDuration: "",
+    nsaidUse: false,
+    pastStoneDisease: false,
+    familyCKD: false,
+    tb: false,
+    hiv: false,
+    hepatitis: false
+  });
+
+  const [symptoms, setSymptoms] = useState({
+    edema: false,
+    fatigue: false,
+    nausea: false,
+    vomiting: false,
+    breathlessness: false,
+    decreasedUrineOutput: false,
+    flankPain: false,
+    hematuria: false
+  });
+
+  const [physicalExam, setPhysicalExam] = useState({
+    sbp: "",
+    dbp: "",
+    weight: "",
+    volumeStatus: ""
+  });
+
+  const [labs, setLabs] = useState({
+    creatinine: "",
+    egfr: "",
+    potassium: "",
+    hemoglobin: "",
+    urinalysisProtein: "",
+    urinalysisBlood: "",
+    acr: "",
+    spotProteinCreatinine: "",
+    urineProtein24h: ""
+  });
+
+  const [imaging, setImaging] = useState({
+    ultrasoundFindings: "",
+    notes: ""
+  });
+
+  const [takingMedicines, setTakingMedicines] = useState(false);
+  const [medicinesList, setMedicinesList] = useState([{ name: "", duration: "" }]);
+
+  const [diagnosis, setDiagnosis] = useState("");
+  const [suggestions, setSuggestions] = useState([]);
+  const [medications, setMedications] = useState([]);
+  const [warnings, setWarnings] = useState([]);
+  const [patientSummary, setPatientSummary] = useState("");
+
   const medicineOptions = [
     {
       label: "🩺 Hypertension Medicines",
@@ -20,7 +83,7 @@ export default function App() {
         { value: "Chlorthalidone", label: "Chlorthalidone (Thiazide)" },
         { value: "Furosemide", label: "Furosemide (Loop Diuretic)" },
         { value: "Spironolactone", label: "Spironolactone (Aldosterone Antagonist)" }
-      ],
+      ]
     },
     {
       label: "🩹 Diabetes Medicines",
@@ -31,7 +94,7 @@ export default function App() {
         { value: "SGLT2 Inhibitor", label: "SGLT2 Inhibitor (e.g. Empagliflozin)" },
         { value: "DPP4 Inhibitor", label: "DPP4 Inhibitor (e.g. Sitagliptin)" },
         { value: "GLP1 Agonist", label: "GLP1 Agonist (e.g. Liraglutide)" }
-      ],
+      ]
     },
     {
       label: "💊 Painkillers (NSAIDs etc.)",
@@ -41,7 +104,7 @@ export default function App() {
         { value: "Indomethacin", label: "Indomethacin (⚠️ Avoid in CKD)" },
         { value: "Paracetamol", label: "Paracetamol (Safe)" },
         { value: "Tramadol", label: "Tramadol (Use with caution)" }
-      ],
+      ]
     },
     {
       label: "⚠️ Kidney-impacting Medicines",
@@ -53,7 +116,7 @@ export default function App() {
         { value: "Tenofovir", label: "Tenofovir" },
         { value: "Cisplatin", label: "Cisplatin (Nephrotoxic Chemo)" },
         { value: "Contrast Dye", label: "Contrast Dye (IV Contrast)" }
-      ],
+      ]
     },
     {
       label: "Other / Supportive",
@@ -63,78 +126,135 @@ export default function App() {
         { value: "Statin", label: "Statin" },
         { value: "Phosphate Binder", label: "Phosphate Binder" },
         { value: "Other", label: "Other" }
-      ],
-    },
+      ]
+    }
   ];
 
-  // ----------------------------
-  // All your states below
-  const [patientProfile, setPatientProfile] = useState({ name: "", age: "", gender: "", location: "" });
-  const [medicalHistory, setMedicalHistory] = useState({
-    diabetes: false,
-    hypertension: false,
-    diabetesDuration: "",
-    hypertensionDuration: "",
-    nsaidUse: false,
-    pastStoneDisease: false,
-    familyCKD: false,
-    tb: false,
-    hiv: false,
-    hepatitis: false
-  });
-  const [symptoms, setSymptoms] = useState({
-    edema: false,
-    fatigue: false,
-    nausea: false,
-    vomiting: false,
-    breathlessness: false,
-    decreasedUrineOutput: false,
-    flankPain: false,
-    hematuria: false
-  });
-  const [physicalExam, setPhysicalExam] = useState({
-    sbp: "",
-    dbp: "",
-    weight: "",
-    volumeStatus: ""
-  });
-  const [labs, setLabs] = useState({
-    creatinine: "",
-    egfr: "",
-    potassium: "",
-    hemoglobin: "",
-    urinalysisProtein: "",
-    urinalysisBlood: "",
-    acr: "",
-    spotProteinCreatinine: "",
-    urineProtein24h: ""
-  });
-  const [imaging, setImaging] = useState({ ultrasoundFindings: "", notes: "" });
-  const [takingMedicines, setTakingMedicines] = useState(false);
-  const [medicinesList, setMedicinesList] = useState([{ name: "", duration: "" }]);
-  const [diagnosis, setDiagnosis] = useState("");
-  const [suggestions, setSuggestions] = useState([]);
-  const [medications, setMedications] = useState([]);
-  const [warnings, setWarnings] = useState([]);
-  const [patientSummary, setPatientSummary] = useState("");
+  function askAkI() {
+    let result = "";
+    let suggest = [];
+    let meds = [];
+    let warns = [];
 
-  // ----------------------------
-  // AskAkI, generatePatientSummary, copySummary etc.
-  // (YOUR existing logic stays here - unchanged)
-  // ----------------------------
-return (
-  <div className="min-h-screen bg-gradient-to-b from-slate-50 to-slate-100 p-4">
-    <div className="max-w-3xl mx-auto bg-white rounded-xl shadow-lg p-6">
+    const eGFR = parseFloat(labs.egfr);
+    const proteinuria = parseFloat(labs.urineProtein24h);
+    const potassium = parseFloat(labs.potassium);
+    const hemoglobin = parseFloat(labs.hemoglobin);
+    const acr = parseFloat(labs.acr);
 
-      {/* Header */}
-      <div className="bg-gradient-to-r from-indigo-600 via-indigo-500 to-indigo-400 rounded-lg shadow-lg p-4 mb-6 text-center">
-        <h1 className="text-3xl md:text-4xl font-bold text-white">NephroCare Pro</h1>
-        <p className="text-green-100 italic text-sm md:text-base mt-1">A Doctor’s Friend</p>
-      </div>
+    if (!isNaN(eGFR)) {
+      if (eGFR >= 90) result = "Normal Kidney Function";
+      else if (eGFR >= 60) result = "Mildly Reduced Function (Stage 2)";
+      else if (eGFR >= 45) result = "CKD Stage 3a";
+      else if (eGFR >= 30) result = "CKD Stage 3b";
+      else if (eGFR >= 15) result = "CKD Stage 4";
+      else result = "CKD Stage 5 (ESRD)";
 
-      {/* 👤 Patient Profile Accordion */}
-      <Accordion title="👤 Patient Profile">
-        <div className="grid gap-3 md:grid-cols-2">
+      if (eGFR < 60) {
+        suggest.push(
+          "Regular eGFR monitoring every 3–6 months",
+          "Avoid nephrotoxins",
+          "Assess blood pressure control"
+        );
+      }
+    }
+
+    if (proteinuria > 3500 && symptoms.edema) {
+      result = "Possible Nephrotic Syndrome";
+      suggest.push(
+        "Check serum albumin",
+        "Consider renal biopsy if unexplained",
+        "Manage edema with diuretics"
+      );
+      meds.push("Loop diuretic for edema");
+    }
+
+    if (medicalHistory.diabetes && eGFR < 60 && (acr > 30 || proteinuria > 150)) {
+      result = "Likely Diabetic Kidney Disease";
+      suggest.push(
+        "Tight glucose control",
+        "Annual ACR monitoring",
+        "Eye screening for retinopathy"
+      );
+      if (eGFR >= 30 && potassium <= 5.5) {
+        meds.push("ACEi/ARB if potassium normal");
+      } else if (potassium > 5.5) {
+        warns.push("Avoid ACEi/ARB due to hyperkalemia risk");
+      }
+    }
+
+    if (medicalHistory.hypertension && eGFR < 60 && proteinuria < 1000) {
+      result = "Possible Hypertensive Nephrosclerosis";
+      suggest.push(
+        "Optimize BP to <130/80",
+        "Regular urinalysis monitoring"
+      );
+      meds.push("ACEi/ARB if potassium normal");
+    }
+
+    if (potassium > 5.5) {
+      warns.push("Hyperkalemia detected: recommend dietary K+ restriction and review medications");
+      meds.push("Consider potassium binders if persistent");
+    }
+
+    if (hemoglobin < 10 && eGFR < 45) {
+      suggest.push(
+        "Check iron studies",
+        "Consider erythropoiesis-stimulating agents if iron replete"
+      );
+    }
+
+    meds.push("Avoid NSAIDs");
+
+    setDiagnosis(result);
+    setSuggestions(suggest);
+    setMedications(meds);
+    setWarnings(warns);
+  }
+
+  function generatePatientSummary() {
+    const historyItems = Object.entries(medicalHistory)
+      .filter(([k, v]) => v === true || (typeof v === "string" && v.trim() !== ""))
+      .map(([k, v]) => typeof v === "boolean" ? k : `${k}: ${v}`)
+      .join("\n");
+
+    const symptomItems = Object.entries(symptoms)
+      .filter(([k, v]) => v === true)
+      .map(([k]) => k)
+      .join("\n");
+
+    const labItems = Object.entries(labs)
+      .filter(([k, v]) => v.trim() !== "")
+      .map(([k, v]) => `${k}: ${v}`)
+      .join("\n");
+
+    const medicinesItems = takingMedicines
+      ? medicinesList.filter(m => m.name || m.duration).map(m => `- ${m.name} (${m.duration})`).join("\n")
+      : "No current medicines";
+
+    setPatientSummary(`Medical History:\n${historyItems}\n\nSymptoms:\n${symptomItems}\n\nLabs:\n${labItems}\n\nMedicines:\n${medicinesItems}`);
+  }
+
+  function copySummary() {
+    navigator.clipboard.writeText(patientSummary);
+    alert("Patient data copied!");
+  }
+
+  function openChatGPTWithSummary() {
+    if (!patientSummary) {
+      alert("Please generate the summary first!");
+      return;
+    }
+    const encoded = encodeURIComponent(patientSummary);
+    window.open(`https://chat.openai.com/?prompt=${encoded}`, "_blank");
+  }
+
+  return (
+    <div className="p-4">
+      <h1 className="text-2xl font-bold mb-4">NephroCare Pro</h1>
+
+      <Accordion title="Patient Profile">
+         <div className="grid gap-3 md:grid-cols-2">
           <input
             type="text"
             placeholder="Name"
@@ -171,99 +291,42 @@ return (
         </div>
       </Accordion>
 
-      {/* 🩺 Medical History Accordion */}
-      <Accordion title="🩺 Medical History">
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
-          {Object.keys(medicalHistory).filter(k => !k.toLowerCase().includes('duration')).map((item) => (
-            <label key={item} className="flex items-center space-x-2">
-              <input
-                type="checkbox"
-                checked={medicalHistory[item]}
-                onChange={(e) =>
-                  setMedicalHistory({ ...medicalHistory, [item]: e.target.checked })
-                }
-                className="accent-indigo-600"
-              />
-              <span className="text-slate-700">{item.replace(/([A-Z])/g, " $1").toUpperCase()}</span>
-            </label>
-          ))}
-        </div>
-
-        {medicalHistory.diabetes && (
-          <input
-            type="text"
-            placeholder="Diabetes Duration (years)"
-            value={medicalHistory.diabetesDuration}
-            onChange={(e) =>
-              setMedicalHistory({ ...medicalHistory, diabetesDuration: e.target.value })
-            }
-            className="mt-2 border rounded-md p-2 w-full focus:ring-indigo-500"
-          />
-        )}
-        {medicalHistory.hypertension && (
-          <input
-            type="text"
-            placeholder="Hypertension Duration (years)"
-            value={medicalHistory.hypertensionDuration}
-            onChange={(e) =>
-              setMedicalHistory({ ...medicalHistory, hypertensionDuration: e.target.value })
-            }
-            className="mt-2 border rounded-md p-2 w-full focus:ring-indigo-500"
-          />
-        )}
-
-        <hr className="my-3" />
-
-        <label className="flex items-center space-x-2 mb-2">
+      <Accordion title="Medical History">
+        <label className="flex items-center space-x-2">
           <input
             type="checkbox"
             checked={takingMedicines}
-            onChange={(e) => setTakingMedicines(e.target.checked)}
-            className="accent-indigo-600"
+            onChange={e => setTakingMedicines(e.target.checked)}
           />
-          <span className="text-slate-700">Currently Taking Medicines</span>
+          <span>Currently Taking Medicines</span>
         </label>
 
-        {takingMedicines && (
-          <div className="space-y-3 mt-2">
-            {medicinesList.map((med, idx) => (
-              <div key={idx} className="grid md:grid-cols-2 gap-2">
-                <Select
-                  options={medicineOptions}
-                  value={med.name ? { value: med.name, label: med.name } : null}
-                  onChange={(selected) => {
-                    const updated = [...medicinesList];
-                    updated[idx].name = selected ? selected.value : "";
-                    setMedicinesList(updated);
-                  }}
-                  isClearable
-                  isSearchable
-                  className="react-select-container"
-                  classNamePrefix="react-select"
-                  placeholder="Search & Select Medicine..."
-                />
-                <input
-                  type="text"
-                  placeholder="Duration (e.g. 6 months)"
-                  value={med.duration}
-                  onChange={(e) => {
-                    const updated = [...medicinesList];
-                    updated[idx].duration = e.target.value;
-                    setMedicinesList(updated);
-                  }}
-                  className="border rounded-md p-2 w-full focus:ring-indigo-500"
-                />
-              </div>
-            ))}
-            <button
-              type="button"
-              onClick={() => setMedicinesList([...medicinesList, { name: "", duration: "" }])}
-              className="mt-2 text-indigo-600 underline"
-            >
-              + Add Another Medicine
-            </button>
+        {takingMedicines && medicinesList.map((med, idx) => (
+          <div key={idx} className="flex gap-2 mt-2">
+            <Select
+              options={medicineOptions}
+              isSearchable
+              value={med.name ? { value: med.name, label: med.name } : null}
+              onChange={selected => {
+                const updated = [...medicinesList];
+                updated[idx].name = selected ? selected.value : "";
+                setMedicinesList(updated);
+              }}
+              className="w-1/2"
+            />
+            <input
+              type="text"
+              placeholder="Duration"
+              value={med.duration}
+              onChange={e => {
+                const updated = [...medicinesList];
+                updated[idx].duration = e.target.value;
+                setMedicinesList(updated);
+              }}
+              className="border rounded p-2 w-1/2"
+            />
           </div>
-        )}
+        ))}
       </Accordion>
       {/* 🩹 Symptoms Accordion */}
       <Accordion title="🩹 Symptoms">
@@ -370,56 +433,24 @@ return (
           />
         </div>
       </Accordion>
-      <div className="flex flex-wrap gap-3 justify-center my-6">
-        <Button onClick={askAkI}>Ask Aktiar</Button>
-        <Button onClick={generatePatientSummary}>Show Patient Data Summary</Button>
-      </div>
 
-      {diagnosis && (
-        <Accordion title="🩺 Diagnosis Result">
-          <p className="mb-2">{diagnosis}</p>
-          {suggestions.length > 0 && (
-            <>
-              <h3 className="font-semibold mt-2">Recommendations:</h3>
-              <ul className="list-disc pl-5">
-                {suggestions.map((s, i) => <li key={i}>{s}</li>)}
-              </ul>
-            </>
-          )}
-          {medications.length > 0 && (
-            <>
-              <h3 className="font-semibold mt-2">Medications:</h3>
-              <ul className="list-disc pl-5">
-                {medications.map((m, i) => <li key={i}>{m}</li>)}
-              </ul>
-            </>
-          )}
-          {warnings.length > 0 && (
-            <>
-              <h3 className="font-semibold mt-2 text-red-600">Warnings:</h3>
-              <ul className="list-disc pl-5 text-red-600">
-                {warnings.map((w, i) => <li key={i}>{w}</li>)}
-              </ul>
-            </>
-          )}
-        </Accordion>
-      )}
+      {/* Add other Accordions here: Symptoms, Physical Exam, Lab Results, Imaging */}
 
+      <Button onClick={askAkI}>Ask Aktiar</Button>
+      <Button onClick={generatePatientSummary}>Generate Summary</Button>
+
+      {diagnosis && <p className="mt-4">{diagnosis}</p>}
       {patientSummary && (
-        <Accordion title="📋 Patient Data Summary (for ChatGPT)">
+        <div className="mt-4">
           <textarea
             value={patientSummary}
             readOnly
-            rows={10}
-            className="border rounded-md p-2 w-full mb-3"
+            className="w-full h-40 border"
           />
-          <div className="flex gap-3 justify-center">
-            <Button onClick={copySummary}>Copy to Clipboard</Button>
-            <Button onClick={openChatGPTWithSummary}>Search Online</Button>
-          </div>
-        </Accordion>
+          <Button onClick={copySummary}>Copy Summary</Button>
+          <Button onClick={openChatGPTWithSummary}>Open in ChatGPT</Button>
+        </div>
       )}
     </div>
-  </div>
-);
+  );
 }
