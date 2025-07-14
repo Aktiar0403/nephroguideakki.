@@ -241,515 +241,301 @@ export default function App() {
     setWarnings(warns);
   }
   return (
-    <div className="min-h-screen bg-gradient-to-b from-slate-50 to-slate-100 p-4">
-      <div className="max-w-3xl mx-auto bg-white rounded-xl shadow-lg p-6">
+  <div className="min-h-screen bg-gradient-to-b from-slate-50 to-slate-100 p-4">
+    <div className="max-w-3xl mx-auto bg-white rounded-xl shadow-lg p-6">
 
-        {/* Header */}
-        <div className="bg-gradient-to-r from-indigo-600 via-indigo-500 to-indigo-400 rounded-lg shadow-lg p-4 mb-6 text-center">
-          <div className="flex items-center justify-center gap-3">
-            <img
-              src="/kidney.png"
-              alt="Kidney Icon"
-              className="h-10 w-10 md:h-12 md:w-12 object-contain"
-            />
-            <h1 className="text-3xl md:text-4xl font-bold text-white">
-              NephroCare Pro
-            </h1>
-          </div>
-          <p className="text-green-100 italic text-sm md:text-base mt-1">
-            A Doctor’s Friend
-          </p>
+      {/* Header */}
+      <div className="bg-gradient-to-r from-indigo-600 via-indigo-500 to-indigo-400 rounded-lg shadow-lg p-4 mb-6 text-center">
+        <div className="flex items-center justify-center gap-3">
+          <img
+            src="/kidney.png"
+            alt="Kidney Icon"
+            className="h-10 w-10 md:h-12 md:w-12 object-contain"
+          />
+          <h1 className="text-3xl md:text-4xl font-bold text-white">
+            NephroCare Pro
+          </h1>
         </div>
+        <p className="text-green-100 italic text-sm md:text-base mt-1">
+          A Doctor’s Friend
+        </p>
+      </div>
 
-        {/* Accordions */}
-        <Accordion title="👤 Patient Profile">
-          <div className="grid gap-3 md:grid-cols-2">
-            <input
-              type="text"
-              placeholder="Name"
-              value={patientProfile.name}
-              onChange={(e) => setPatientProfile({ ...patientProfile, name: e.target.value })}
-              className="border rounded-md p-2 w-full focus:ring-indigo-500"
-            />
-            <input
-              type="number"
-              placeholder="Age"
-              value={patientProfile.age}
-              onChange={(e) => setPatientProfile({ ...patientProfile, age: e.target.value })}
-              className="border rounded-md p-2 w-full focus:ring-indigo-500"
-            />
-            <select
-              value={patientProfile.gender}
-              onChange={(e) => setPatientProfile({ ...patientProfile, gender: e.target.value })}
-              className="border rounded-md p-2 w-full focus:ring-indigo-500"
-            >
-              <option value="">Gender</option>
-              <option>Male</option>
-              <option>Female</option>
-              <option>Other</option>
-            </select>
-            <select
-              value={patientProfile.location}
-              onChange={(e) => setPatientProfile({ ...patientProfile, location: e.target.value })}
-              className="border rounded-md p-2 w-full focus:ring-indigo-500"
-            >
-              <option value="">Location</option>
-              <option>Rural</option>
-              <option>Urban</option>
-            </select>
-          </div>
-        </Accordion>
-
-        <Accordion title="🩺 Medical History">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
-            {["diabetes", "hypertension", "nsaidUse", "pastStoneDisease", "familyCKD", "tb", "hiv", "hepatitis"].map((item) => (
-              <label key={item} className="flex items-center space-x-2">
-                <input
-                  type="checkbox"
-                  checked={medicalHistory[item]}
-                  onChange={(e) => setMedicalHistory({ ...medicalHistory, [item]: e.target.checked })}
-                  className="accent-indigo-600"
-                />
-                <span className="text-slate-700">{item.replace(/([A-Z])/g, " $1").toUpperCase()}</span>
-              </label>
-            ))}
-          </div>
-
-          {medicalHistory.diabetes && (
-            <input
-              type="text"
-              placeholder="Diabetes Duration (years)"
-              value={medicalHistory.diabetesDuration}
-              onChange={(e) => setMedicalHistory({ ...medicalHistory, diabetesDuration: e.target.value })}
-              className="mt-2 border rounded-md p-2 w-full focus:ring-indigo-500"
-            />
-          )}
-          {medicalHistory.hypertension && (
-            <input
-              type="text"
-              placeholder="Hypertension Duration (years)"
-              value={medicalHistory.hypertensionDuration}
-              onChange={(e) => setMedicalHistory({ ...medicalHistory, hypertensionDuration: e.target.value })}
-              className="mt-2 border rounded-md p-2 w-full focus:ring-indigo-500"
-            />
-          )}
-
-          <hr className="my-3" />
-
-          <label className="flex items-center space-x-2 mb-2">
-            <input
-              type="checkbox"
-              checked={takingMedicines}
-              onChange={(e) => setTakingMedicines(e.target.checked)}
-              className="accent-indigo-600"
-            />
-            <span className="text-slate-700">Currently Taking Medicines</span>
-          </label>
-
-          {takingMedicines && (
-            <div className="space-y-3 mt-2">
-              {medicinesList.map((med, idx) => (
-                <div key={idx} className="grid md:grid-cols-2 gap-2">
-                  <Select
-                    options={medicineOptions}
-                    value={med.name ? { value: med.name, label: med.name } : null}
-                    onChange={(selected) => {
-                      const updated = [...medicinesList];
-                      updated[idx].name = selected ? selected.value : "";
-                      setMedicinesList(updated);
-                    }}
-                    isClearable
-                    isSearchable
-                    className="react-select-container"
-                    classNamePrefix="react-select"
-                    placeholder="Search & Select Medicine..."
-                  />
-                  <input
-                    type="text"
-                    placeholder="Duration (e.g. 6 months)"
-                    value={med.duration}
-                    onChange={(e) => {
-                      const updated = [...medicinesList];
-                      updated[idx].duration = e.target.value;
-                      setMedicinesList(updated);
-                    }}
-                    className="border rounded-md p-2 w-full focus:ring-indigo-500"
-                  />
-                </div>
-              ))}
-              <button
-                type="button"
-                onClick={() => setMedicinesList([...medicinesList, { name: "", duration: "" }])}
-                className="mt-2 text-indigo-600 underline"
-              >
-                + Add Another Medicine
-              </button>
-            </div>
-          )}
-        </Accordion>
-
-         return (
-    <div className="min-h-screen bg-gradient-to-b from-slate-50 to-slate-100 p-4">
-      <div className="max-w-3xl mx-auto bg-white rounded-xl shadow-lg p-6">
-
-        {/* Header */}
-        <div className="bg-gradient-to-r from-indigo-600 via-indigo-500 to-indigo-400 rounded-lg shadow-lg p-4 mb-6 text-center">
-          <div className="flex items-center justify-center gap-3">
-            <img
-              src="/kidney.png"
-              alt="Kidney Icon"
-              className="h-10 w-10 md:h-12 md:w-12 object-contain"
-            />
-            <h1 className="text-3xl md:text-4xl font-bold text-white">
-              NephroCare Pro
-            </h1>
-          </div>
-          <p className="text-green-100 italic text-sm md:text-base mt-1">
-            A Doctor’s Friend
-          </p>
+      {/* 👤 Patient Profile Accordion */}
+      <Accordion title="👤 Patient Profile">
+        <div className="grid gap-3 md:grid-cols-2">
+          <input
+            type="text"
+            placeholder="Name"
+            value={patientProfile.name}
+            onChange={(e) => setPatientProfile({ ...patientProfile, name: e.target.value })}
+            className="border rounded-md p-2 w-full focus:ring-indigo-500"
+          />
+          <input
+            type="number"
+            placeholder="Age"
+            value={patientProfile.age}
+            onChange={(e) => setPatientProfile({ ...patientProfile, age: e.target.value })}
+            className="border rounded-md p-2 w-full focus:ring-indigo-500"
+          />
+          <select
+            value={patientProfile.gender}
+            onChange={(e) => setPatientProfile({ ...patientProfile, gender: e.target.value })}
+            className="border rounded-md p-2 w-full focus:ring-indigo-500"
+          >
+            <option value="">Gender</option>
+            <option>Male</option>
+            <option>Female</option>
+            <option>Other</option>
+          </select>
+          <select
+            value={patientProfile.location}
+            onChange={(e) => setPatientProfile({ ...patientProfile, location: e.target.value })}
+            className="border rounded-md p-2 w-full focus:ring-indigo-500"
+          >
+            <option value="">Location</option>
+            <option>Rural</option>
+            <option>Urban</option>
+          </select>
         </div>
+      </Accordion>
 
-        {/* 👤 Patient Profile Accordion */}
-        <Accordion title="👤 Patient Profile">
-          <div className="grid gap-3 md:grid-cols-2">
-            <input
-              type="text"
-              placeholder="Name"
-              value={patientProfile.name}
-              onChange={(e) => setPatientProfile({ ...patientProfile, name: e.target.value })}
-              className="border rounded-md p-2 w-full focus:ring-indigo-500"
-            />
-            <input
-              type="number"
-              placeholder="Age"
-              value={patientProfile.age}
-              onChange={(e) => setPatientProfile({ ...patientProfile, age: e.target.value })}
-              className="border rounded-md p-2 w-full focus:ring-indigo-500"
-            />
-            <select
-              value={patientProfile.gender}
-              onChange={(e) => setPatientProfile({ ...patientProfile, gender: e.target.value })}
-              className="border rounded-md p-2 w-full focus:ring-indigo-500"
-            >
-              <option value="">Gender</option>
-              <option>Male</option>
-              <option>Female</option>
-              <option>Other</option>
-            </select>
-            <select
-              value={patientProfile.location}
-              onChange={(e) => setPatientProfile({ ...patientProfile, location: e.target.value })}
-              className="border rounded-md p-2 w-full focus:ring-indigo-500"
-            >
-              <option value="">Location</option>
-              <option>Rural</option>
-              <option>Urban</option>
-            </select>
-          </div>
-        </Accordion>
-
-        {/* 🩺 Medical History Accordion */}
-        <Accordion title="🩺 Medical History">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
-            {["diabetes", "hypertension", "nsaidUse", "pastStoneDisease", "familyCKD", "tb", "hiv", "hepatitis"].map((item) => (
-              <label key={item} className="flex items-center space-x-2">
-                <input
-                  type="checkbox"
-                  checked={medicalHistory[item]}
-                  onChange={(e) =>
-                    setMedicalHistory({ ...medicalHistory, [item]: e.target.checked })
-                  }
-                  className="accent-indigo-600"
-                />
-                <span className="text-slate-700">{item.replace(/([A-Z])/g, " $1").toUpperCase()}</span>
-              </label>
-            ))}
-          </div>
-
-          {medicalHistory.diabetes && (
-            <input
-              type="text"
-              placeholder="Diabetes Duration (years)"
-              value={medicalHistory.diabetesDuration}
-              onChange={(e) =>
-                setMedicalHistory({ ...medicalHistory, diabetesDuration: e.target.value })
-              }
-              className="mt-2 border rounded-md p-2 w-full focus:ring-indigo-500"
-            />
-          )}
-          {medicalHistory.hypertension && (
-            <input
-              type="text"
-              placeholder="Hypertension Duration (years)"
-              value={medicalHistory.hypertensionDuration}
-              onChange={(e) =>
-                setMedicalHistory({ ...medicalHistory, hypertensionDuration: e.target.value })
-              }
-              className="mt-2 border rounded-md p-2 w-full focus:ring-indigo-500"
-            />
-          )}
-
-          <hr className="my-3" />
-
-          <label className="flex items-center space-x-2 mb-2">
-            <input
-              type="checkbox"
-              checked={takingMedicines}
-              onChange={(e) => setTakingMedicines(e.target.checked)}
-              className="accent-indigo-600"
-            />
-            <span className="text-slate-700">Currently Taking Medicines</span>
-          </label>
-
-          {takingMedicines && (
-            <div className="space-y-3 mt-2">
-              {medicinesList.map((med, idx) => (
-                <div key={idx} className="grid md:grid-cols-2 gap-2">
-                  <Select
-                    options={medicineOptions}
-                    value={med.name ? { value: med.name, label: med.name } : null}
-                    onChange={(selected) => {
-                      const updated = [...medicinesList];
-                      updated[idx].name = selected ? selected.value : "";
-                      setMedicinesList(updated);
-                    }}
-                    isClearable
-                    isSearchable
-                    className="react-select-container"
-                    classNamePrefix="react-select"
-                    placeholder="Search & Select Medicine..."
-                  />
-                  <input
-                    type="text"
-                    placeholder="Duration (e.g. 6 months)"
-                    value={med.duration}
-                    onChange={(e) => {
-                      const updated = [...medicinesList];
-                      updated[idx].duration = e.target.value;
-                      setMedicinesList(updated);
-                    }}
-                    className="border rounded-md p-2 w-full focus:ring-indigo-500"
-                  />
-                </div>
-              ))}
-              <button
-                type="button"
-                onClick={() => setMedicinesList([...medicinesList, { name: "", duration: "" }])}
-                className="mt-2 text-indigo-600 underline"
-              >
-                + Add Another Medicine
-              </button>
-            </div>
-          )}
-        </Accordion>
-
-        {/* 🩹 Symptoms Accordion */}
-        <Accordion title="🩹 Symptoms">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
-            {Object.keys(symptoms).map((item) => (
-              <label key={item} className="flex items-center space-x-2">
-                <input
-                  type="checkbox"
-                  checked={symptoms[item]}
-                  onChange={(e) => setSymptoms({ ...symptoms, [item]: e.target.checked })}
-                  className="accent-indigo-600"
-                />
-                <span className="text-slate-700">{item.replace(/([A-Z])/g, " $1").toUpperCase()}</span>
-              </label>
-            ))}
-          </div>
-        </Accordion>
-
-        {/* 🩺 Physical Exam Accordion */}
-        <Accordion title="🩺 Physical Exam">
-          <div className="grid gap-3 md:grid-cols-2">
-            <input
-              type="number"
-              placeholder="SBP (mmHg)"
-              value={physicalExam.sbp}
-              onChange={(e) => setPhysicalExam({ ...physicalExam, sbp: e.target.value })}
-              className="border rounded-md p-2 w-full focus:ring-indigo-500"
-            />
-            <input
-              type="number"
-              placeholder="DBP (mmHg)"
-              value={physicalExam.dbp}
-              onChange={(e) => setPhysicalExam({ ...physicalExam, dbp: e.target.value })}
-              className="border rounded-md p-2 w-full focus:ring-indigo-500"
-            />
-            <input
-              type="number"
-              placeholder="Weight (kg)"
-              value={physicalExam.weight}
-              onChange={(e) => setPhysicalExam({ ...physicalExam, weight: e.target.value })}
-              className="border rounded-md p-2 w-full focus:ring-indigo-500"
-            />
-            <select
-              value={physicalExam.volumeStatus}
-              onChange={(e) =>
-                setPhysicalExam({ ...physicalExam, volumeStatus: e.target.value })
-              }
-              className="border rounded-md p-2 w-full focus:ring-indigo-500"
-            >
-              <option value="">Volume Status</option>
-              <option value="Hypovolemic">Hypovolemic</option>
-              <option value="Euvolemic">Euvolemic</option>
-              <option value="Hypervolemic">Hypervolemic</option>
-            </select>
-          </div>
-        </Accordion>
-
-        {/* 🧪 Lab Results Accordion */}
-        <Accordion title="🧪 Lab Results">
-          <div className="grid gap-3 md:grid-cols-2">
-            {Object.keys(labs).map((key) => (
+      {/* 🩺 Medical History Accordion */}
+      <Accordion title="🩺 Medical History">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
+          {["diabetes", "hypertension", "nsaidUse", "pastStoneDisease", "familyCKD", "tb", "hiv", "hepatitis"].map((item) => (
+            <label key={item} className="flex items-center space-x-2">
               <input
-                key={key}
-                type="text"
-                placeholder={key.replace(/([A-Z])/g, " $1")}
-                value={labs[key]}
-                onChange={(e) => setLabs({ ...labs, [key]: e.target.value })}
-                className="border rounded-md p-2 w-full focus:ring-indigo-500"
+                type="checkbox"
+                checked={medicalHistory[item]}
+                onChange={(e) => setMedicalHistory({ ...medicalHistory, [item]: e.target.checked })}
+                className="accent-indigo-600"
               />
-            ))}
-          </div>
-        </Accordion>
-
-        {/* 🖼️ Imaging Accordion */}
-        <Accordion title="🖼️ Imaging - Kidney Ultrasound">
-          <div className="space-y-3">
-            <label className="block">
-              <span className="text-slate-700 text-sm">Ultrasound Findings</span>
-              <select
-                value={imaging.ultrasoundFindings}
-                onChange={(e) => setImaging({ ...imaging, ultrasoundFindings: e.target.value })}
-                className="border rounded-md p-2 w-full focus:ring-indigo-500"
-              >
-                <option value="">Select Finding</option>
-                <option>Normal kidneys</option>
-                <option>Increased echogenicity</option>
-                <option>Small shrunken kidneys</option>
-                <option>Asymmetry (one small)</option>
-                <option>Hydronephrosis</option>
-                <option>Cystic disease</option>
-                <option>Obstructive calculi</option>
-                <option>Other (describe below)</option>
-              </select>
+              <span className="text-slate-700">{item.replace(/([A-Z])/g, " $1").toUpperCase()}</span>
             </label>
-            <textarea
-              placeholder="Additional ultrasound notes (optional)"
-              value={imaging.notes || ""}
-              onChange={(e) => setImaging({ ...imaging, notes: e.target.value })}
+          ))}
+        </div>
+
+        {medicalHistory.diabetes && (
+          <input
+            type="text"
+            placeholder="Diabetes Duration (years)"
+            value={medicalHistory.diabetesDuration}
+            onChange={(e) => setMedicalHistory({ ...medicalHistory, diabetesDuration: e.target.value })}
+            className="mt-2 border rounded-md p-2 w-full focus:ring-indigo-500"
+          />
+        )}
+        {medicalHistory.hypertension && (
+          <input
+            type="text"
+            placeholder="Hypertension Duration (years)"
+            value={medicalHistory.hypertensionDuration}
+            onChange={(e) => setMedicalHistory({ ...medicalHistory, hypertensionDuration: e.target.value })}
+            className="mt-2 border rounded-md p-2 w-full focus:ring-indigo-500"
+          />
+        )}
+
+        <hr className="my-3" />
+
+        <label className="flex items-center space-x-2 mb-2">
+          <input
+            type="checkbox"
+            checked={takingMedicines}
+            onChange={(e) => setTakingMedicines(e.target.checked)}
+            className="accent-indigo-600"
+          />
+          <span className="text-slate-700">Currently Taking Medicines</span>
+        </label>
+
+        {takingMedicines && (
+          <div className="space-y-3 mt-2">
+            {medicinesList.map((med, idx) => (
+              <div key={idx} className="grid md:grid-cols-2 gap-2">
+                <Select
+                  options={medicineOptions}
+                  value={med.name ? { value: med.name, label: med.name } : null}
+                  onChange={(selected) => {
+                    const updated = [...medicinesList];
+                    updated[idx].name = selected ? selected.value : "";
+                    setMedicinesList(updated);
+                  }}
+                  isClearable
+                  isSearchable
+                  className="react-select-container"
+                  classNamePrefix="react-select"
+                  placeholder="Search & Select Medicine..."
+                />
+                <input
+                  type="text"
+                  placeholder="Duration (e.g. 6 months)"
+                  value={med.duration}
+                  onChange={(e) => {
+                    const updated = [...medicinesList];
+                    updated[idx].duration = e.target.value;
+                    setMedicinesList(updated);
+                  }}
+                  className="border rounded-md p-2 w-full focus:ring-indigo-500"
+                />
+              </div>
+            ))}
+            <button
+              type="button"
+              onClick={() => setMedicinesList([...medicinesList, { name: "", duration: "" }])}
+              className="mt-2 text-indigo-600 underline"
+            >
+              + Add Another Medicine
+            </button>
+          </div>
+        )}
+      </Accordion>
+
+      {/* 🩹 Symptoms Accordion */}
+      <Accordion title="🩹 Symptoms">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
+          {Object.keys(symptoms).map((item) => (
+            <label key={item} className="flex items-center space-x-2">
+              <input
+                type="checkbox"
+                checked={symptoms[item]}
+                onChange={(e) => setSymptoms({ ...symptoms, [item]: e.target.checked })}
+                className="accent-indigo-600"
+              />
+              <span className="text-slate-700">{item.replace(/([A-Z])/g, " $1").toUpperCase()}</span>
+            </label>
+          ))}
+        </div>
+      </Accordion>
+
+      {/* 🩺 Physical Exam Accordion */}
+      <Accordion title="🩺 Physical Exam">
+        <div className="grid gap-3 md:grid-cols-2">
+          <input
+            type="number"
+            placeholder="SBP (mmHg)"
+            value={physicalExam.sbp}
+            onChange={(e) => setPhysicalExam({ ...physicalExam, sbp: e.target.value })}
+            className="border rounded-md p-2 w-full focus:ring-indigo-500"
+          />
+          <input
+            type="number"
+            placeholder="DBP (mmHg)"
+            value={physicalExam.dbp}
+            onChange={(e) => setPhysicalExam({ ...physicalExam, dbp: e.target.value })}
+            className="border rounded-md p-2 w-full focus:ring-indigo-500"
+          />
+          <input
+            type="number"
+            placeholder="Weight (kg)"
+            value={physicalExam.weight}
+            onChange={(e) => setPhysicalExam({ ...physicalExam, weight: e.target.value })}
+            className="border rounded-md p-2 w-full focus:ring-indigo-500"
+          />
+          <select
+            value={physicalExam.volumeStatus}
+            onChange={(e) => setPhysicalExam({ ...physicalExam, volumeStatus: e.target.value })}
+            className="border rounded-md p-2 w-full focus:ring-indigo-500"
+          >
+            <option value="">Volume Status</option>
+            <option value="Hypovolemic">Hypovolemic</option>
+            <option value="Euvolemic">Euvolemic</option>
+            <option value="Hypervolemic">Hypervolemic</option>
+          </select>
+        </div>
+      </Accordion>
+
+      {/* 🧪 Lab Results Accordion */}
+      <Accordion title="🧪 Lab Results">
+        <div className="grid gap-3 md:grid-cols-2">
+          {Object.keys(labs).map((key) => (
+            <input
+              key={key}
+              type="text"
+              placeholder={key.replace(/([A-Z])/g, " $1")}
+              value={labs[key]}
+              onChange={(e) => setLabs({ ...labs, [key]: e.target.value })}
               className="border rounded-md p-2 w-full focus:ring-indigo-500"
-              rows={3}
             />
+          ))}
+        </div>
+      </Accordion>
+
+      {/* 🖼️ Imaging Accordion */}
+      <Accordion title="🖼️ Imaging - Kidney Ultrasound">
+        <div className="space-y-3">
+          <label className="block">
+            <span className="text-slate-700 text-sm">Ultrasound Findings</span>
+            <select
+              value={imaging.ultrasoundFindings}
+              onChange={(e) => setImaging({ ...imaging, ultrasoundFindings: e.target.value })}
+              className="border rounded-md p-2 w-full focus:ring-indigo-500"
+            >
+              <option value="">Select Finding</option>
+              <option>Normal kidneys</option>
+              <option>Increased echogenicity</option>
+              <option>Small shrunken kidneys</option>
+              <option>Asymmetry (one small)</option>
+              <option>Hydronephrosis</option>
+              <option>Cystic disease</option>
+              <option>Obstructive calculi</option>
+              <option>Other (describe below)</option>
+            </select>
+          </label>
+          <textarea
+            placeholder="Additional ultrasound notes (optional)"
+            value={imaging.notes || ""}
+            onChange={(e) => setImaging({ ...imaging, notes: e.target.value })}
+            className="border rounded-md p-2 w-full focus:ring-indigo-500"
+            rows={3}
+          />
+        </div>
+      </Accordion>
+
+      {/* Buttons */}
+      <div className="flex flex-wrap gap-3 justify-center my-6">
+        <Button onClick={askAkI}>Ask Aktiar</Button>
+        <Button onClick={generatePatientSummary}>Show Patient Data Summary</Button>
+      </div>
+
+      {/* Diagnosis Result Accordion */}
+      {diagnosis && (
+        <Accordion title="🩺 Diagnosis Result">
+          <p className="mb-2">{diagnosis}</p>
+          {suggestions.length > 0 && (
+            <>
+              <h3 className="font-semibold mt-2">Recommendations:</h3>
+              <ul className="list-disc pl-5">{suggestions.map((s, i) => <li key={i}>{s}</li>)}</ul>
+            </>
+          )}
+          {medications.length > 0 && (
+            <>
+              <h3 className="font-semibold mt-2">Medications:</h3>
+              <ul className="list-disc pl-5">{medications.map((m, i) => <li key={i}>{m}</li>)}</ul>
+            </>
+          )}
+          {warnings.length > 0 && (
+            <>
+              <h3 className="font-semibold mt-2 text-red-600">Warnings:</h3>
+              <ul className="list-disc pl-5 text-red-600">{warnings.map((w, i) => <li key={i}>{w}</li>)}</ul>
+            </>
+          )}
+        </Accordion>
+      )}
+
+      {/* Patient Data Summary Accordion */}
+      {patientSummary && (
+        <Accordion title="📋 Patient Data Summary (for ChatGPT)">
+          <textarea
+            value={patientSummary}
+            readOnly
+            rows={10}
+            className="border rounded-md p-2 w-full mb-3"
+          />
+          <div className="flex gap-3 justify-center">
+            <Button onClick={copySummary}>Copy to Clipboard</Button>
+            <Button onClick={openChatGPTWithSummary}>Search Online</Button>
           </div>
         </Accordion>
-
-        {/* Buttons */}
-        <div className="flex flex-wrap gap-3 justify-center my-6">
-          <Button onClick={askAkI}>Ask Aktiar</Button>
-          <Button onClick={generatePatientSummary}>Show Patient Data Summary</Button>
-        </div>
-
-        {/* Diagnosis Result Accordion */}
-        {diagnosis && (
-          <Accordion title="🩺 Diagnosis Result">
-            <p className="mb-2">{diagnosis}</p>
-            {suggestions.length > 0 && (
-              <>
-                <h3 className="font-semibold mt-2">Recommendations:</h3>
-                <ul className="list-disc pl-5">
-                  {suggestions.map((s, i) => <li key={i}>{s}</li>)}
-                </ul>
-              </>
-            )}
-            {medications.length > 0 && (
-              <>
-                <h3 className="font-semibold mt-2">Medications:</h3>
-                <ul className="list-disc pl-5">
-                  {medications.map((m, i) => <li key={i}>{m}</li>)}
-                </ul>
-              </>
-            )}
-            {warnings.length > 0 && (
-              <>
-                <h3 className="font-semibold mt-2 text-red-600">Warnings:</h3>
-                <ul className="list-disc pl-5 text-red-600">
-                  {warnings.map((w, i) => <li key={i}>{w}</li>)}
-                </ul>
-              </>
-            )}
-          </Accordion>
-        )}
-
-        {/* Patient Data Summary Accordion */}
-        {patientSummary && (
-          <Accordion title="📋 Patient Data Summary (for ChatGPT)">
-            <textarea
-              value={patientSummary}
-              readOnly
-              rows={10}
-              className="border rounded-md p-2 w-full mb-3"
-            />
-            <div className="flex gap-3 justify-center">
-              <Button onClick={copySummary}>Copy to Clipboard</Button>
-              <Button onClick={openChatGPTWithSummary}>Search Online</Button>
-            </div>
-          </Accordion>
-        )}
-      </div>
+      )}
     </div>
-  );
-
-
-        <div className="flex flex-wrap gap-3 justify-center my-6">
-          <Button onClick={askAkI}>Ask Aktiar</Button>
-          <Button onClick={generatePatientSummary}>Show Patient Data Summary</Button>
-        </div>
-
-        {diagnosis && (
-          <Accordion title="🩺 Diagnosis Result">
-            <p className="mb-2">{diagnosis}</p>
-            {suggestions.length > 0 && (
-              <>
-                <h3 className="font-semibold mt-2">Recommendations:</h3>
-                <ul className="list-disc pl-5">{suggestions.map((s, i) => <li key={i}>{s}</li>)}</ul>
-              </>
-            )}
-            {medications.length > 0 && (
-              <>
-                <h3 className="font-semibold mt-2">Medications:</h3>
-                <ul className="list-disc pl-5">{medications.map((m, i) => <li key={i}>{m}</li>)}</ul>
-              </>
-            )}
-            {warnings.length > 0 && (
-              <>
-                <h3 className="font-semibold mt-2 text-red-600">Warnings:</h3>
-                <ul className="list-disc pl-5 text-red-600">{warnings.map((w, i) => <li key={i}>{w}</li>)}</ul>
-              </>
-            )}
-          </Accordion>
-        )}
-
-        {patientSummary && (
-          <Accordion title="📋 Patient Data Summary (for ChatGPT)">
-            <textarea
-              value={patientSummary}
-              readOnly
-              rows={10}
-              className="border rounded-md p-2 w-full mb-3"
-            />
-            <div className="flex gap-3 justify-center">
-              <Button onClick={copySummary}>Copy to Clipboard</Button>
-              <Button onClick={openChatGPTWithSummary}>Search Online</Button>
-            </div>
-          </Accordion>
-        )}
-      </div>
-    </div>
-  );
-}
-
-  
-
+  </div>
+);
