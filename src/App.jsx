@@ -253,6 +253,7 @@ Determine the medical condition, diagnose, prescribe medicine and suggest furthe
     <div className="min-h-screen bg-gradient-to-b from-slate-50 to-slate-100 p-4">
       <div className="max-w-3xl mx-auto bg-white rounded-xl shadow-lg p-6">
 
+        {/* Header */}
         <div className="bg-gradient-to-r from-indigo-600 via-indigo-500 to-indigo-400 rounded-lg shadow-lg p-4 mb-6 text-center">
           <div className="flex items-center justify-center gap-3">
             <img
@@ -269,31 +270,322 @@ Determine the medical condition, diagnose, prescribe medicine and suggest furthe
           </p>
         </div>
 
-        {/* ADD ALL YOUR ACCORDIONS HERE */}
+        {/* Accordions Start */}
         <Accordion title="👤 Patient Profile">
-          {/* ... Your Patient Profile form inputs here ... */}
+          <div className="grid gap-3 md:grid-cols-2">
+            <input
+              type="text"
+              placeholder="Name"
+              value={patientProfile.name}
+              onChange={(e) => setPatientProfile({ ...patientProfile, name: e.target.value })}
+              className="border rounded-md p-2 w-full focus:ring-indigo-500"
+            />
+            <input
+              type="number"
+              placeholder="Age"
+              value={patientProfile.age}
+              onChange={(e) => setPatientProfile({ ...patientProfile, age: e.target.value })}
+              className="border rounded-md p-2 w-full focus:ring-indigo-500"
+            />
+            <select
+              value={patientProfile.gender}
+              onChange={(e) => setPatientProfile({ ...patientProfile, gender: e.target.value })}
+              className="border rounded-md p-2 w-full focus:ring-indigo-500"
+            >
+              <option value="">Gender</option>
+              <option>Male</option>
+              <option>Female</option>
+              <option>Other</option>
+            </select>
+            <select
+              value={patientProfile.location}
+              onChange={(e) => setPatientProfile({ ...patientProfile, location: e.target.value })}
+              className="border rounded-md p-2 w-full focus:ring-indigo-500"
+            >
+              <option value="">Location</option>
+              <option>Rural</option>
+              <option>Urban</option>
+            </select>
+          </div>
         </Accordion>
+                <Accordion title="🩺 Medical History">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
+            {["diabetes", "hypertension", "nsaidUse", "pastStoneDisease", "familyCKD", "tb", "hiv", "hepatitis"].map((item) => (
+              <label key={item} className="flex items-center space-x-2">
+                <input
+                  type="checkbox"
+                  checked={medicalHistory[item]}
+                  onChange={(e) =>
+                    setMedicalHistory({ ...medicalHistory, [item]: e.target.checked })
+                  }
+                  className="accent-indigo-600"
+                />
+                <span className="text-slate-700">{item.replace(/([A-Z])/g, " $1").toUpperCase()}</span>
+              </label>
+            ))}
+          </div>
 
-        <Accordion title="🩺 Medical History">
-          {/* ... Medical History with takingMedicines toggle and medicineList here ... */}
+          {medicalHistory.diabetes && (
+            <input
+              type="text"
+              placeholder="Diabetes Duration (years)"
+              value={medicalHistory.diabetesDuration}
+              onChange={(e) =>
+                setMedicalHistory({ ...medicalHistory, diabetesDuration: e.target.value })
+              }
+              className="mt-2 border rounded-md p-2 w-full focus:ring-indigo-500"
+            />
+          )}
+          {medicalHistory.hypertension && (
+            <input
+              type="text"
+              placeholder="Hypertension Duration (years)"
+              value={medicalHistory.hypertensionDuration}
+              onChange={(e) =>
+                setMedicalHistory({ ...medicalHistory, hypertensionDuration: e.target.value })
+              }
+              className="mt-2 border rounded-md p-2 w-full focus:ring-indigo-500"
+            />
+          )}
+
+          <hr className="my-3" />
+
+          <label className="flex items-center space-x-2 mb-2">
+            <input
+              type="checkbox"
+              checked={takingMedicines}
+              onChange={(e) => setTakingMedicines(e.target.checked)}
+              className="accent-indigo-600"
+            />
+            <span className="text-slate-700">Currently Taking Medicines</span>
+          </label>
+
+          {takingMedicines && (
+            <div className="space-y-3 mt-2">
+              {medicinesList.map((med, idx) => (
+                <div key={idx} className="grid md:grid-cols-2 gap-2">
+                  <select
+                    value={med.name}
+                    onChange={(e) => {
+                      const updated = [...medicinesList];
+                      updated[idx].name = e.target.value;
+                      setMedicinesList(updated);
+                    }}
+                    className="border rounded-md p-2 w-full focus:ring-indigo-500"
+                  >
+                    <option value="">Select Medicine</option>
+                    <option>Enalapril</option>
+                    <option>Ramipril</option>
+                    <option>Losartan</option>
+                    <option>Furosemide</option>
+                    <option>Spironolactone</option>
+                    <option>Hydrochlorothiazide</option>
+                    <option>Potassium Binder</option>
+                    <option>Calcium Channel Blocker</option>
+                    <option>SGLT2 Inhibitor</option>
+                    <option>Other</option>
+                  </select>
+                  <input
+                    type="text"
+                    placeholder="Duration (e.g. 6 months)"
+                    value={med.duration}
+                    onChange={(e) => {
+                      const updated = [...medicinesList];
+                      updated[idx].duration = e.target.value;
+                      setMedicinesList(updated);
+                    }}
+                    className="border rounded-md p-2 w-full focus:ring-indigo-500"
+                  />
+                </div>
+              ))}
+              <button
+                type="button"
+                onClick={() => setMedicinesList([...medicinesList, { name: "", duration: "" }])}
+                className="mt-2 text-indigo-600 underline"
+              >
+                + Add Another Medicine
+              </button>
+            </div>
+          )}
         </Accordion>
 
         <Accordion title="🩹 Symptoms">
-          {/* ... Symptoms checkboxes here ... */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
+            {Object.keys(symptoms).map((item) => (
+              <label key={item} className="flex items-center space-x-2">
+                <input
+                  type="checkbox"
+                  checked={symptoms[item]}
+                  onChange={(e) =>
+                    setSymptoms({ ...symptoms, [item]: e.target.checked })
+                  }
+                  className="accent-indigo-600"
+                />
+                <span className="text-slate-700">{item.replace(/([A-Z])/g, " $1").toUpperCase()}</span>
+              </label>
+            ))}
+          </div>
         </Accordion>
-
         <Accordion title="🩺 Physical Exam">
-          {/* ... Physical exam fields here ... */}
+          <div className="grid gap-3 md:grid-cols-2">
+            <input
+              type="number"
+              placeholder="SBP (mmHg)"
+              value={physicalExam.sbp}
+              onChange={(e) => setPhysicalExam({ ...physicalExam, sbp: e.target.value })}
+              className="border rounded-md p-2 w-full focus:ring-indigo-500"
+            />
+            <input
+              type="number"
+              placeholder="DBP (mmHg)"
+              value={physicalExam.dbp}
+              onChange={(e) => setPhysicalExam({ ...physicalExam, dbp: e.target.value })}
+              className="border rounded-md p-2 w-full focus:ring-indigo-500"
+            />
+            <input
+              type="number"
+              placeholder="Weight (kg)"
+              value={physicalExam.weight}
+              onChange={(e) => setPhysicalExam({ ...physicalExam, weight: e.target.value })}
+              className="border rounded-md p-2 w-full focus:ring-indigo-500"
+            />
+            <select
+              value={physicalExam.volumeStatus}
+              onChange={(e) =>
+                setPhysicalExam({ ...physicalExam, volumeStatus: e.target.value })
+              }
+              className="border rounded-md p-2 w-full focus:ring-indigo-500"
+            >
+              <option value="">Volume Status</option>
+              <option value="Hypovolemic">Hypovolemic</option>
+              <option value="Euvolemic">Euvolemic</option>
+              <option value="Hypervolemic">Hypervolemic</option>
+            </select>
+          </div>
         </Accordion>
 
         <Accordion title="🧪 Lab Results">
-          {/* ... Lab inputs here ... */}
+          <div className="grid gap-3 md:grid-cols-2">
+            <label className="block">
+              <span className="text-slate-700 text-sm">Creatinine (0.6–1.2 mg/dL)</span>
+              <input
+                type="text"
+                value={labs.creatinine}
+                onChange={(e) => setLabs({ ...labs, creatinine: e.target.value })}
+                className="border rounded-md p-2 w-full focus:ring-indigo-500"
+              />
+            </label>
+
+            <label className="block">
+              <span className="text-slate-700 text-sm">eGFR (&gt;90 mL/min)</span>
+              <input
+                type="text"
+                value={labs.egfr}
+                onChange={(e) => setLabs({ ...labs, egfr: e.target.value })}
+                className="border rounded-md p-2 w-full focus:ring-indigo-500"
+              />
+            </label>
+            <label className="block">
+              <span className="text-slate-700 text-sm">Potassium (3.5–5.0 mEq/L)</span>
+              <input
+                type="text"
+                value={labs.potassium}
+                onChange={(e) => setLabs({ ...labs, potassium: e.target.value })}
+                className="border rounded-md p-2 w-full focus:ring-indigo-500"
+              />
+            </label>
+
+            <label className="block">
+              <span className="text-slate-700 text-sm">Hemoglobin (M:13–17 / F:12–15 g/dL)</span>
+              <input
+                type="text"
+                value={labs.hemoglobin}
+                onChange={(e) => setLabs({ ...labs, hemoglobin: e.target.value })}
+                className="border rounded-md p-2 w-full focus:ring-indigo-500"
+              />
+            </label>
+
+            <label className="block">
+              <span className="text-slate-700 text-sm">Urinalysis Protein (Negative/Trace)</span>
+              <input
+                type="text"
+                value={labs.urinalysisProtein}
+                onChange={(e) => setLabs({ ...labs, urinalysisProtein: e.target.value })}
+                className="border rounded-md p-2 w-full focus:ring-indigo-500"
+              />
+            </label>
+
+            <label className="block">
+              <span className="text-slate-700 text-sm">Urinalysis Blood (Negative)</span>
+              <input
+                type="text"
+                value={labs.urinalysisBlood}
+                onChange={(e) => setLabs({ ...labs, urinalysisBlood: e.target.value })}
+                className="border rounded-md p-2 w-full focus:ring-indigo-500"
+              />
+            </label>
+
+            <label className="block">
+              <span className="text-slate-700 text-sm">ACR (&lt;30 mg/g)</span>
+              <input
+                type="text"
+                value={labs.acr}
+                onChange={(e) => setLabs({ ...labs, acr: e.target.value })}
+                className="border rounded-md p-2 w-full focus:ring-indigo-500"
+              />
+            </label>
+
+            <label className="block">
+              <span className="text-slate-700 text-sm">Spot Protein/Creatinine (&lt;150 mg/g)</span>
+              <input
+                type="text"
+                value={labs.spotProteinCreatinine}
+                onChange={(e) => setLabs({ ...labs, spotProteinCreatinine: e.target.value })}
+                className="border rounded-md p-2 w-full focus:ring-indigo-500"
+              />
+            </label>
+
+            <label className="block">
+              <span className="text-slate-700 text-sm">24h Urine Protein (&lt;150 mg/day)</span>
+              <input
+                type="text"
+                value={labs.urineProtein24h}
+                onChange={(e) => setLabs({ ...labs, urineProtein24h: e.target.value })}
+                className="border rounded-md p-2 w-full focus:ring-indigo-500"
+              />
+            </label>
+          </div>
         </Accordion>
 
         <Accordion title="🖼️ Imaging - Kidney Ultrasound">
-          {/* ... Imaging findings dropdown and notes here ... */}
+          <div className="space-y-3">
+            <label className="block">
+              <span className="text-slate-700 text-sm">Ultrasound Findings</span>
+              <select
+                value={imaging.ultrasoundFindings}
+                onChange={(e) => setImaging({ ...imaging, ultrasoundFindings: e.target.value })}
+                className="border rounded-md p-2 w-full focus:ring-indigo-500"
+              >
+                <option value="">Select Finding</option>
+                <option>Normal kidneys</option>
+                <option>Increased echogenicity</option>
+                <option>Small shrunken kidneys</option>
+                <option>Asymmetry (one small)</option>
+                <option>Hydronephrosis</option>
+                <option>Cystic disease</option>
+                <option>Obstructive calculi</option>
+                <option>Other (describe below)</option>
+              </select>
+            </label>
+            <textarea
+              placeholder="Additional ultrasound notes (optional)"
+              value={imaging.notes || ""}
+              onChange={(e) => setImaging({ ...imaging, notes: e.target.value })}
+              className="border rounded-md p-2 w-full focus:ring-indigo-500"
+              rows={3}
+            />
+          </div>
         </Accordion>
-
         <div className="flex flex-wrap gap-3 justify-center my-6">
           <Button onClick={askAkI}>Ask Aktiar</Button>
           <Button onClick={generatePatientSummary}>Show Patient Data Summary</Button>
@@ -301,10 +593,31 @@ Determine the medical condition, diagnose, prescribe medicine and suggest furthe
 
         {diagnosis && (
           <Accordion title="🩺 Diagnosis Result">
-            <p>{diagnosis}</p>
-            {suggestions.length > 0 && <ul>{suggestions.map((s, i) => <li key={i}>{s}</li>)}</ul>}
-            {medications.length > 0 && <ul>{medications.map((m, i) => <li key={i}>{m}</li>)}</ul>}
-            {warnings.length > 0 && <ul className="text-red-600">{warnings.map((w, i) => <li key={i}>{w}</li>)}</ul>}
+            <p className="mb-2">{diagnosis}</p>
+            {suggestions.length > 0 && (
+              <>
+                <h3 className="font-semibold mt-2">Recommendations:</h3>
+                <ul className="list-disc pl-5">
+                  {suggestions.map((s, i) => <li key={i}>{s}</li>)}
+                </ul>
+              </>
+            )}
+            {medications.length > 0 && (
+              <>
+                <h3 className="font-semibold mt-2">Medications:</h3>
+                <ul className="list-disc pl-5">
+                  {medications.map((m, i) => <li key={i}>{m}</li>)}
+                </ul>
+              </>
+            )}
+            {warnings.length > 0 && (
+              <>
+                <h3 className="font-semibold mt-2 text-red-600">Warnings:</h3>
+                <ul className="list-disc pl-5 text-red-600">
+                  {warnings.map((w, i) => <li key={i}>{w}</li>)}
+                </ul>
+              </>
+            )}
           </Accordion>
         )}
 
@@ -316,7 +629,7 @@ Determine the medical condition, diagnose, prescribe medicine and suggest furthe
               rows={10}
               className="border rounded-md p-2 w-full mb-3"
             />
-            <div className="flex gap-3">
+            <div className="flex gap-3 justify-center">
               <Button onClick={copySummary}>Copy to Clipboard</Button>
               <Button onClick={openChatGPTWithSummary}>Search Online</Button>
             </div>
